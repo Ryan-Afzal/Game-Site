@@ -107,5 +107,5 @@
     }
 
     $('#win-alert').hide();
-    createRandomGrid(2);
+    createRandomGrid(6);
 });
