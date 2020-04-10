@@ -7,7 +7,33 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
+            <!-- Win Box -->
             <div id="win-alert" class="alert alert-success" style="display: none;">You Win!</div>
+
+            <!-- Modal -->
+            <div class="modal fade hide" id="difficultySelect" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="difficultySelectLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="difficultySelectLabel">Difficulty</h5>
+                        </div>
+                        <div class="modal-body">
+                            <h6>How to play</h6>
+                            <ul>
+                                <li>Click a tile to swap its color, and that of its entire row and column.</li>
+                                <li>Win by making the entire grid white!</li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="difficulty-2x2" class="btn btn-success" data-dismiss="modal">2&times;2</button>
+                            <button type="button" id="difficulty-4x4" class="btn btn-info" data-dismiss="modal">4&times;4</button>
+                            <button type="button" id="difficulty-6x6" class="btn btn-primary" data-dismiss="modal">6&times;6</button>
+                            <button type="button" id="difficulty-8x8" class="btn btn-warning" data-dismiss="modal">8&times;8</button>
+                            <button type="button" id="difficulty-10x10" class="btn btn-danger" data-dismiss="modal">10&times;10</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">

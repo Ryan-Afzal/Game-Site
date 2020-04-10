@@ -74,6 +74,7 @@
 
     var createRandomGrid = function (n) {
         var body = $("#tile-grid-body");
+        body.empty();
 
         for (r = 0; r < n; r++) {
             var row = $("<tr></tr>");
@@ -107,5 +108,26 @@
     }
 
     $('#win-alert').hide();
-    createRandomGrid(6);
+
+    $('#difficulty-2x2').click(function () {
+        createRandomGrid(2);
+    });
+
+    $('#difficulty-4x4').click(function () {
+        createRandomGrid(4);
+    });
+
+    $('#difficulty-6x6').click(function () {
+        createRandomGrid(6);
+    });
+
+    $('#difficulty-8x8').click(function () {
+        createRandomGrid(8);
+    });
+
+    $('#difficulty-10x10').click(function () {
+        createRandomGrid(10);
+    });
+
+    $('#difficultySelect').modal('show');
 });
