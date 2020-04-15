@@ -15,7 +15,7 @@
         stopTimer();
 
         var body = $("<div></div>")
-            .addClass("card-body")
+            .addClass("card-body text-center")
             .append($("<h3></h3>")
                 .addClass("card-title text-success text-center")
                 .text("You win!")
@@ -23,6 +23,13 @@
             .append($("<p></p>")
                 .addClass("card-text text-center")
                 .text(`Score: ${score(global_n, global_moves, global_endTime - global_startTime)}`)
+            )
+            .append($("<button></button>")
+                .addClass("btn btn-dark")
+                .attr("type", "button")
+                .attr("data-toggle", "modal")
+                .attr("data-target", "#difficultySelect")
+                .text("Play Again")
             );
 
         var card = $("<div></div>")
@@ -82,7 +89,16 @@
     }
 
     var score = function (n, moves, time) {
-        return Math.floor((100 * Math.pow(n, 2) * global_minMoves) / ((time / 1000) * moves));
+        /*
+         * 100 * (n^2) * minMoves * minTime
+         * --------------------------------
+         *          moves * time
+         */
+
+        var timePerMove = 1500;
+        var minTime = global_minMoves * timePerMove;
+
+        return Math.floor((100 * Math.pow(n, 2) * global_minMoves * minTime) / (moves * time));
     }
 
     var randomBool = function () {
@@ -95,7 +111,7 @@
 
     var createTile = function (n, r, c, color) {// color is bool; true = light; false = dark
         var node = $("<div></div>")
-            .addClass("tile")
+            .addClass(`tile tile-${n}`)
             .attr('id', `tile-${getNumberFromRowColumn(n, r, c)}`)
             .attr('tile-r', r)
             .attr('tile-c', c);;
@@ -194,12 +210,15 @@
     }
 
     var setupGame = function (n, color) {
+        $("#win-alert").empty();
         createRandomGrid(n);
 
         global_n = n;
+        global_moves = 0;
         global_game_moves = $('#game-moves').text(0);
         $('#game-size')
-            .addClass(`badge-${color}`)
+            .removeClass()
+            .addClass(`badge text-light badge-${color}`)
             .text(`${n}\u00D7${n}`);
         global_game_timer = $('#game-timer');
         startTimer();

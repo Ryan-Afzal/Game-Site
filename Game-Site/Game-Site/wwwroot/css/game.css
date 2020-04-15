@@ -1,6 +1,30 @@
 ﻿.tile {
+
+}
+
+.tile-2 {
+    height: 256px;
+    width: 256px;
+}
+
+.tile-4 {
     height: 128px;
     width: 128px;
+}
+
+.tile-6 {
+    height: 86px;
+    width: 86px;
+}
+
+.tile-8 {
+    height: 64px;
+    width: 64px;
+}
+
+.tile-10 {
+    height: 51px;
+    width: 51px;
 }
 
 #tile-grid {
