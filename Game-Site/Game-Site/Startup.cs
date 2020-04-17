@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Grid_Game {
 	public class Startup {
+
 		public Startup(IConfiguration configuration) {
 			Configuration = configuration;
 		}
@@ -48,5 +49,6 @@ namespace Grid_Game {
 				endpoints.MapRazorPages();
 			});
 		}
+
 	}
 }
