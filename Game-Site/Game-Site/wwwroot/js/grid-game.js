@@ -1,4 +1,6 @@
-﻿$('document').ready(function () {
+﻿"use strict;"
+
+$('document').ready(function () {
     var global_active = false;//Is game active (boolean)
     var global_set = new Set();//Set of black tiles (JS Set)
     var global_n = 0;//Board side length (int)
@@ -230,14 +232,14 @@
         var c = [];
 
         //Start with them all at 0
-        for (i = 0; i < n; i++) {
+        for (var i = 0; i < n; i++) {
             r[i] = 0;
             c[i] = 0;
         }
 
         // Set each index in the rows and columns to be the number of black tiles in each row/column
-        for (_r = 0; _r < n; _r++) {
-            for (_c = 0; _c < n; _c++) {
+        for (var _r = 0; _r < n; _r++) {
+            for (var _c = 0; _c < n; _c++) {
                 if (arr[getNumberFromRowColumn(n, _r, _c)][1] == 1) {
                     r[_r]++;
                     c[_c]++;
@@ -247,8 +249,8 @@
 
         //A move is required for each tile in the [i, j] grid where r[i] + c[j] + arr[i][j] is odd
         var moves = 0;
-        for (_r = 0; _r < n; _r++) {
-            for (_c = 0; _c < n; _c++) {
+        for (var _r = 0; _r < n; _r++) {
+            for (var _c = 0; _c < n; _c++) {
                 var i = r[_r] + c[_c] + arr[getNumberFromRowColumn(n, _r, _c)][1];
                 if (i % 2 == 1) {
                     moves++;
