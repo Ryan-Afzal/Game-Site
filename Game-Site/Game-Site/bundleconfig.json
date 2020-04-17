@@ -6,9 +6,15 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/css/game.min.css",
+    "outputFileName": "wwwroot/css/grid-game.min.css",
     "inputFiles": [
-      "wwwroot/css/game.css"
+      "wwwroot/css/grid-game.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/card-game.min.css",
+    "inputFiles": [
+      "wwwroot/css/card-game.css"
     ]
   },
   {
@@ -23,9 +29,20 @@
     "sourceMap": false
   },
   {
-    "outputFileName": "wwwroot/js/game.min.js",
+    "outputFileName": "wwwroot/js/grid-game.min.js",
     "inputFiles": [
-      "wwwroot/js/game.js"
+      "wwwroot/js/grid-game.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/card-game.min.js",
+    "inputFiles": [
+      "wwwroot/js/card-game.js"
     ],
     "minify": {
       "enabled": true,

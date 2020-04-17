@@ -1,0 +1,22 @@
+﻿@page
+@model Grid_Game.Areas.Games.Pages.Card_GameModel
+@{
+    ViewData["Title"] = "Card Game";
+}
+
+<div class="alert alert-warning">'Card Game' is a work-in-progress. Check back later!</div>
+
+<div class="container">
+
+</div>
+
+@section Scripts {
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/card-game.css" asp-append-version="true" />
+        <script src="~/js/card-game.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/card-game.min.css" asp-append-version="true" />
+        <script src="~/js/card-game.min.js" asp-append-version="true"></script>
+    </environment>
+}
