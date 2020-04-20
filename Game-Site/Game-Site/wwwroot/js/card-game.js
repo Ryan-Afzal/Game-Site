@@ -10,8 +10,8 @@ $('document').ready(function () {
             .addClass("card bg-dark text-light")
             .append($("<div></div>")
                 .addClass("card-body")
-                .append($("<p></p>")
-                    .addClass("card-title display-4 text-center")
+                .append($("<h3></h3>")
+                    .addClass("card-title text-center")
                     .text(num)
             )
         );
@@ -19,23 +19,57 @@ $('document').ready(function () {
         return card;
     }
 
-    // Create a card deck going up to the specified number.
+    // Populates the card grid with a card deck going up to the specified number.
     // A deck consists of n pairs of cards numbering 1-n.
     var createCardDeck = function (n) {
-        var deck = $("<div></div>")
-            .addClass("row row-cols-2 row-cols-md-2");
+        var column = $("#card-grid-col");
 
-        for (i = 2; i <= 2*n; i++) {
-            deck.append($("<div></div>")
-                .addClass("col mb-4")
-                .append(createCard(Math.floor(i / 2)))
+        var body = $("#card-grid-body");
+        body.empty();
+
+        var numCards = 2 * n;
+
+        var i = 2;
+        while (i < numCards) {
+            var row = $("<tr></tr>");
+
+            var node = $("<td></td>")
+                .append(createCard(Math.floor(i / 2))
+                    // No chained calls yet
             );
+
+            while (row.width() + node.width() < column.width() && i < numCards) {
+                row.append(node);
+
+                i++;
+
+                node = $("<td></td>")
+                    .append(createCard(Math.floor(i / 2))
+                        // No chained calls yet
+                    );
+            }
+
+            body.append(row);
         }
 
-        return deck;
+        for (var r = 0; r < rows; r++) {
+            var row = $("<tr></tr>");
+
+            for (var c = 0; c < cols && i <= numCards; c++) {
+                row.append($("<td></td>")
+                    .append(createCard(Math.floor(i / 2))
+                        // No chained calls yet
+                    )
+                );
+
+                i++;
+            }
+
+            body.append(row);
+        }
     }
 
-    $("#cardContainer").append(createCardDeck(10));
+    createCardDeck(10);
 
     //settingsModal.modal('show');
 });

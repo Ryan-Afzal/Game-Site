@@ -10,7 +10,7 @@ $('document').ready(function () {
     var global_endTime = null;//End 'Date' to complete game in milliseconds since 1970 (int)
     var global_interval = null;//Timer interval (JS object)
     var global_game_moves = null;//Moves label (jQuery object)
-    var global_game_timer = null;//Timer label (jQuery object)
+    var global_game_timer = $('#game-timer');//Timer label (jQuery object)
 
     var win = function () {
         global_active = false;
@@ -49,11 +49,11 @@ $('document').ready(function () {
     var startTimer = function () {
         global_startTime = Date.now();
         clearInterval(global_interval);
-        interval = setInterval(updateTimer, 1);
+        global_interval = setInterval(updateTimer, 1);
     }
 
     var stopTimer = function () {
-        clearInterval(interval);
+        clearInterval(global_interval);
         global_endTime = Date.now();
     }
 
@@ -169,6 +169,7 @@ $('document').ready(function () {
     }
 
     var createRandomGrid = function (n) {
+        global_set = new Set();
         var arr = [];
 
         var body = $("#tile-grid-body");
@@ -212,6 +213,10 @@ $('document').ready(function () {
     }
 
     var setupGame = function (n, color) {
+        stopTimer();
+        global_endTime = null;
+        global_interval = null;
+
         $("#win-alert").empty();
         createRandomGrid(n);
 
@@ -222,7 +227,6 @@ $('document').ready(function () {
             .removeClass()
             .addClass(`badge text-light badge-${color}`)
             .text(`${n}\u00D7${n}`);
-        global_game_timer = $('#game-timer');
         startTimer();
     }
 
