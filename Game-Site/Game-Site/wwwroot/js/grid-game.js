@@ -1,6 +1,4 @@
-﻿"use strict;"
-
-$('document').ready(function () {
+﻿$('document').ready(function () {
     var global_active = false;//Is game active (boolean)
     var global_set = new Set();//Set of black tiles (JS Set)
     var global_n = 0;//Board side length (int)
@@ -11,6 +9,8 @@ $('document').ready(function () {
     var global_interval = null;//Timer interval (JS object)
     var global_game_moves = null;//Moves label (jQuery object)
     var global_game_timer = $('#game-timer');//Timer label (jQuery object)
+    var global_grid = $('#tile-grid');
+    var global_grid_col = $('#tile-grid-col');
 
     var win = function () {
         global_active = false;
@@ -112,11 +112,18 @@ $('document').ready(function () {
     }
 
     var createTile = function (n, r, c, color) {// color is bool; true = light; false = dark
+        var width = global_grid_col.width();
+        var spacing = global_grid.attr('cellspacing');
+        var padding = global_grid.attr('cellpadding');
+
+        var size = (width - (padding * 2 * n) - (spacing * (n - 1))) / n;
+
         var node = $("<div></div>")
-            .addClass(`tile tile-${n}`)
+            .addClass(`tile`)
             .attr('id', `tile-${getNumberFromRowColumn(n, r, c)}`)
+            .attr('style', `width: ${size}px; height: ${size}px;`)
             .attr('tile-r', r)
-            .attr('tile-c', c);;
+            .attr('tile-c', c);
 
         if (color) {
             node.addClass("bg-dark");
