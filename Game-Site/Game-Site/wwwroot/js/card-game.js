@@ -4,16 +4,14 @@ $('document').ready(function () {
     var settingsModal = $("#settingsModal");
     var settingsOk = $("#settingsModalOk");
 
-    // Create a card with the specified number.
-    var createCard = function (num) {
+    // Create card #n.
+    var createCard = function (n) {
         var card = $("<div></div>")
-            .addClass("card bg-dark text-light")
-            .append($("<div></div>")
-                .addClass("card-body")
-                .append($("<h3></h3>")
-                    .addClass("card-title text-center")
-                    .text(num)
-            )
+            .attr('id', `card-${n}`)
+            .addClass("game-card bg-dark text-light")
+            .append($("<h3></h3>")
+                .addClass("text-center")
+                .text(Math.floor(n / 2))
         );
 
         return card;
@@ -69,7 +67,7 @@ $('document').ready(function () {
         }
     }
 
-    createCardDeck(10);
+    //createCardDeck(10);
 
     //settingsModal.modal('show');
 });
