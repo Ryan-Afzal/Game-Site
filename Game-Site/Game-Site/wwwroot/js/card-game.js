@@ -4,60 +4,44 @@ $('document').ready(function () {
     var settingsModal = $("#settingsModal");
     var settingsOk = $("#settingsModalOk");
 
+    var cards = [];
+    var selectedCards = [];
+
+    var n = 15;
+    var k = 4;
+
     // Create card #n.
     var createCard = function (n) {
-        var card = $("<div></div>")
-            .attr('id', `card-${n}`)
-            .addClass("game-card bg-dark text-light")
-            .append($("<h3></h3>")
-                .addClass("text-center")
-                .text(Math.floor(n / 2))
-        );
-
-        return card;
+        throw new DOMException();
     }
 
-    // Populates the card grid with a card deck going up to the specified number.
-    // A deck consists of n pairs of cards numbering 1-n.
-    var createCardDeck = function (n) {
+    // Populates the card grid with n cards
+    var createCardDeck = function () {
+        var cards = [];
+        var selectedCards = [];
+
         var column = $("#card-grid-col");
 
         var body = $("#card-grid-body");
         body.empty();
 
-        var numCards = 2 * n;
+        var numCards = n * 2;
+        var rows = 5;
+        var cols = 6;
 
-        var i = 2;
-        while (i < numCards) {
-            var row = $("<tr></tr>");
-
-            var node = $("<td></td>")
-                .append(createCard(Math.floor(i / 2))
-                    // No chained calls yet
-            );
-
-            while (row.width() + node.width() < column.width() && i < numCards) {
-                row.append(node);
-
-                i++;
-
-                node = $("<td></td>")
-                    .append(createCard(Math.floor(i / 2))
-                        // No chained calls yet
-                    );
-            }
-
-            body.append(row);
-        }
+        var i = 0;
 
         for (var r = 0; r < rows; r++) {
             var row = $("<tr></tr>");
 
-            for (var c = 0; c < cols && i <= numCards; c++) {
-                row.append($("<td></td>")
-                    .append(createCard(Math.floor(i / 2))
-                        // No chained calls yet
-                    )
+            for (var c = 0; c < cols; c++) {
+                var card = createCard(i);
+
+                cards.append(card);
+
+                row.append(
+                    $("<td></td>")
+                    .append(card)
                 );
 
                 i++;
@@ -67,7 +51,11 @@ $('document').ready(function () {
         }
     }
 
-    //createCardDeck(10);
+    var shuffle = function (cards) {
+        throw new DOMException();
+    }
+
+    createCardDeck();
 
     //settingsModal.modal('show');
 });
