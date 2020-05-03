@@ -7,6 +7,8 @@ $('document').ready(function () {
     var cards = [];
     var selectedCards = [];
 
+    var turnedOver = false;
+
     var n = 18;
     var k = 4;
 
@@ -26,6 +28,7 @@ $('document').ready(function () {
     var createCardDeck = function () {
         cards = [];
         selectedCards = [];
+        turnedOver = false;
 
         var column = $("#card-grid-col");
         var grid = $("#card-grid");
@@ -51,7 +54,7 @@ $('document').ready(function () {
                 var card = createCard(i, width, height);
 
                 card.click(function () {
-
+                    selectCard(this);
                 });
 
                 cards.push(card);
@@ -68,19 +71,31 @@ $('document').ready(function () {
         }
     }
 
-    var shuffle = function (cards) {
-        throw new DOMException();
+    var onCardClicked = function (card) {
+        if (turnedOver) {
+            
+        } else {
+
+        }
     }
 
-    var selectCard = function (card) {// Select a card
+    var selectCard = function (card) {
 
     }
 
-    var turnOverCards = function () {// Turns over selected k cards.
+    var deselectCard = function (card) {
 
     }
 
-    var shuffleCards = function () {// Turns selected cards over, deselects them, and shuffles them.
+    var shuffleCards = function (cards) {
+
+    }
+
+    var turnCardsUp = function (cards) {
+
+    }
+
+    var turnCardsDown = function (cards) {
 
     }
 
