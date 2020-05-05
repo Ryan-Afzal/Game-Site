@@ -56,7 +56,7 @@ $('document').ready(function () {
                 var card = createCard(i, width, height);
 
                 card.click(function () {
-                    cardClicked(this);
+                    cardClicked($(this));
                 });
 
                 cards.push(card);
@@ -79,15 +79,21 @@ $('document').ready(function () {
             .attr("id", `card-${n}`)
             .attr("card-num", Math.floor(n / 2) + 1)
             .addClass("game-card bg-dark")
-            .attr("style", `width: ${width}px; height: ${height}px;`);
-
+            .attr("style", `width: ${width}px; height: ${height}px;`)
+            .append($("<h5></h5>")
+                .addClass("game-card-text text-light text-center")
+                .text("?")
+            );
+        
         return node;
     }
 
     var cardClicked = function (card) {
         if (!turnedOver) {
-            if (selectedCards.indexOf(card) == -1) {
-                selectCard(card);
+            if (selectedCards.indexOf(card.attr("id")) == -1) {
+                if (selectedCards.length < k) {
+                    selectCard(card);
+                }
             } else {
                 deselectCard(card);
             }
@@ -95,16 +101,80 @@ $('document').ready(function () {
     }
 
     var selectCard = function (card) {
-        selectedCards.push(card);
-
+        selectedCards.push(card.attr("id"));
+        
         // Start 'Selected effects
+        card.toggleClass("bg-dark", false);
+        card.toggleClass("bg-primary", true);
+
+        if (selectedCards.length == k) {
+            //Enable 'Turn Over' Button
+        }
     }
 
     var deselectCard = function (card) {
-        var index = selectedCards.indexOf(card);
+        var index = selectedCards.indexOf(card.attr("id"));
         selectedCards.splice(index, 1);
 
         // Stop 'Selected' effects
+        card.toggleClass("bg-dark", true);
+        card.toggleClass("bg-primary", false);
+
+        if (selectedCards.length < k) {
+            disableButton();
+        }
+    }
+
+    var deselectAll = function () {
+        for (var i = 0; i < selectedCards.length; i++) {
+            deselectCard($(`#card-${selectedCards[i]}`));
+        }
+    }
+
+    var turnUpAll = function () {
+        var nums = [];
+        var win = false;
+
+        for (var i = 0; i < selectedCards.length; i++) {
+            var card = $(`#card-${selectedCards[i]}`);
+
+            if (nums.indexOf(card.attr("card-num")) != -1) {
+                win = true;
+            }
+
+            nums.push(card.attr("card-num"));
+
+            turnUpCard(card);
+        }
+    }
+
+    var turnUpCard = function (card) {
+        card.children(".game-card-text").text(card.attr("card-num"));
+    }
+
+    var turnDownAll = function () {
+        for (var i = 0; i < selectedCards.length; i++) {
+            var card = $(`#card-${selectedCards[i]}`);
+            turnDownCard(card);
+        }
+
+        deselectAll();
+    }
+
+    var turnDownCard = function (card) {
+        card.children(".game-card-text").text("?");
+    }
+
+    var highlightCard = function (card) {
+
+    }
+
+    var enableButton = function () {
+
+    }
+
+    var disableButton = function () {
+
     }
 
     var buttonClicked = function () {
