@@ -1,9 +1,12 @@
 ﻿"use strict;"
 
 $('document').ready(function () {
+    // jQuery Objects
     var settingsModal = $("#settingsModal");
     var settingsOk = $("#settingsModalOk");
+    var turnOverButton = $("#turn-over-button");
 
+    // Variables
     var cards = [];
     var selectedCards = [];
 
@@ -12,19 +15,18 @@ $('document').ready(function () {
     var n = 18;
     var k = 4;
 
-    // Create card #n.
-    var createCard = function (n, width, height) {
-        //throw new DOMException();
-        var node = $("<div></div>")
-            .attr("id", `card-${n}`)
-            .attr("card-num", Math.floor(n / 2) + 1)
-            .addClass("game-card bg-dark")
-            .attr("style", `width: ${width}px; height: ${height}px;`);
+    // Functions
 
-        return node;
+    var setupGame = function () {
+        n = 18;
+        k = 4;
+        turnedOver = false;
+
+        turnOverButton.click(buttonClicked);
+
+        createCardDeck();
     }
 
-    // Populates the card grid with n cards
     var createCardDeck = function () {
         cards = [];
         selectedCards = [];
@@ -54,7 +56,7 @@ $('document').ready(function () {
                 var card = createCard(i, width, height);
 
                 card.click(function () {
-                    selectCard(this);
+                    cardClicked(this);
                 });
 
                 cards.push(card);
@@ -71,39 +73,46 @@ $('document').ready(function () {
         }
     }
 
-    var onCardClicked = function (card) {
-        if (turnedOver) {
-            
-        } else {
+    var createCard = function (n, width, height) {
+        //throw new DOMException();
+        var node = $("<div></div>")
+            .attr("id", `card-${n}`)
+            .attr("card-num", Math.floor(n / 2) + 1)
+            .addClass("game-card bg-dark")
+            .attr("style", `width: ${width}px; height: ${height}px;`);
 
+        return node;
+    }
+
+    var cardClicked = function (card) {
+        if (!turnedOver) {
+            if (selectedCards.indexOf(card) == -1) {
+                selectCard(card);
+            } else {
+                deselectCard(card);
+            }
         }
     }
 
     var selectCard = function (card) {
+        selectedCards.push(card);
 
+        // Start 'Selected effects
     }
 
     var deselectCard = function (card) {
+        var index = selectedCards.indexOf(card);
+        selectedCards.splice(index, 1);
+
+        // Stop 'Selected' effects
+    }
+
+    var buttonClicked = function () {
 
     }
 
-    var shuffleCards = function (cards) {
-
-    }
-
-    var turnCardsUp = function (cards) {
-
-    }
-
-    var turnCardsDown = function (cards) {
-
-    }
-
-    var win = function () {
-
-    }
-
-    createCardDeck();
+    // Start
+    setupGame();
 
     //settingsModal.modal('show');
 });
