@@ -7,22 +7,22 @@ $('document').ready(function () {
     var turnOverButton = $("#turn-over-button");
 
     // Variables
-    var cards = [];
-    var selectedCards = [];
+    var cards;
+    var selectedCards;
 
-    var turnedOver = false;
+    var turnedOver;
 
-    var n = 18;
-    var k = 4;
+    var n;
+    var k;
 
     // Functions
 
     var setupGame = function () {
         n = 18;
         k = 4;
-        turnedOver = false;
 
         turnOverButton.click(buttonClicked);
+        disableButton();
 
         createCardDeck();
     }
@@ -108,7 +108,7 @@ $('document').ready(function () {
         card.toggleClass("bg-primary", true);
 
         if (selectedCards.length == k) {
-            //Enable 'Turn Over' Button
+            enableButton();
         }
     }
 
@@ -126,25 +126,37 @@ $('document').ready(function () {
     }
 
     var deselectAll = function () {
-        for (var i = 0; i < selectedCards.length; i++) {
-            deselectCard($(`#card-${selectedCards[i]}`));
+        while (selectedCards.length > 0) {
+            deselectCard($(`#${selectedCards[0]}`));
         }
     }
 
     var turnUpAll = function () {
+        turnedOver = true;
         var nums = [];
         var win = false;
 
         for (var i = 0; i < selectedCards.length; i++) {
-            var card = $(`#card-${selectedCards[i]}`);
+            var card = $(`#${selectedCards[i]}`);
+            var cardNum = card.attr("card-num");
 
-            if (nums.indexOf(card.attr("card-num")) != -1) {
+            var equalCard = nums.find((id) => {
+                $(`#${id}`).attr("card-num") == cardNum;
+            });
+
+            if (equalCard != undefined) {
                 win = true;
+                highlightCard(card);
+                highlightCard($(`#${equalCard}`));
             }
 
-            nums.push(card.attr("card-num"));
+            nums.push(card.attr("id"));
 
             turnUpCard(card);
+        }
+
+        if (win) {
+            onWin();
         }
     }
 
@@ -153,12 +165,15 @@ $('document').ready(function () {
     }
 
     var turnDownAll = function () {
+        turnedOver = false;
+
         for (var i = 0; i < selectedCards.length; i++) {
-            var card = $(`#card-${selectedCards[i]}`);
+            var card = $(`#${selectedCards[i]}`);
             turnDownCard(card);
         }
 
         deselectAll();
+        disableButton();
     }
 
     var turnDownCard = function (card) {
@@ -166,19 +181,29 @@ $('document').ready(function () {
     }
 
     var highlightCard = function (card) {
-
+        console.log(card.attr("id"));
     }
 
     var enableButton = function () {
-
+        turnOverButton.toggleClass("disabled", false);
+        turnOverButton.removeAttr("disabled");
     }
 
     var disableButton = function () {
-
+        turnOverButton.toggleClass("disabled", true);
+        turnOverButton.attr("disabled", "disabled");
     }
 
     var buttonClicked = function () {
+        if (turnedOver) {
+            turnDownAll();
+        } else {
+            turnUpAll();
+        }
+    }
 
+    var onWin = function () {
+        console.log("You Win!");
     }
 
     // Start
