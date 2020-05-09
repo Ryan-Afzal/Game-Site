@@ -4,8 +4,6 @@
     ViewData["Title"] = "Brandon's Evil Card Game";
 }
 
-<div class="alert alert-warning">Ignore this page: It is a work in progress.</div>
-
 <!-- Settings Modal -->
 <div class="modal fade hide" id="settingsModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -32,7 +30,23 @@
     </div>
     <div class="row">
         <div class="col-3">
+            <div class="row">
+                <div class="col-12">
+                    <div id="win-alert">
 
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <br />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <button id="restart-button" class="btn btn-block btn-danger" type="button">Restart</button>
+                </div>
+            </div>
         </div>
         <div id="card-grid-col" class="col-9">
             <table id="card-grid" class="text-center" cellpadding="10" cellspacing="5">

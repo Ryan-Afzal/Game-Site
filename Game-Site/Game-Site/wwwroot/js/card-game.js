@@ -8,7 +8,7 @@ $('document').ready(function () {
 
     // Variables
     var cards;
-    var selectedCards;
+    var selectedCards;// Array of IDs of selected cards
 
     var turnedOver;
 
@@ -18,20 +18,21 @@ $('document').ready(function () {
     // Functions
 
     var setupGame = function () {
+        cards = [];
+        selectedCards = [];
+        turnedOver = false;
+
         n = 18;
         k = 4;
 
-        turnOverButton.click(buttonClicked);
+        $("#win-alert").empty();
+        $('#restart-button').toggleClass("btn-danger", true).toggleClass("btn-success", false);
         disableButton();
 
         createCardDeck();
     }
 
     var createCardDeck = function () {
-        cards = [];
-        selectedCards = [];
-        turnedOver = false;
-
         var column = $("#card-grid-col");
         var grid = $("#card-grid");
         var body = $("#card-grid-body");
@@ -74,14 +75,13 @@ $('document').ready(function () {
     }
 
     var createCard = function (n, width, height) {
-        //throw new DOMException();
         var node = $("<div></div>")
             .attr("id", `card-${n}`)
             .attr("card-num", Math.floor(n / 2) + 1)
             .addClass("game-card bg-dark")
             .attr("style", `width: ${width}px; height: ${height}px;`)
-            .append($("<h5></h5>")
-                .addClass("game-card-text text-light text-center")
+            .append($("<h2></h2>")
+                .addClass("game-card-text text-light")
                 .text("?")
             );
         
@@ -133,26 +133,26 @@ $('document').ready(function () {
 
     var turnUpAll = function () {
         turnedOver = true;
-        var nums = [];
+        var checkedIDs = [];
         var win = false;
 
         for (var i = 0; i < selectedCards.length; i++) {
-            var card = $(`#${selectedCards[i]}`);
-            var cardNum = card.attr("card-num");
+            var currentID = selectedCards[i];
+            var currentCard = $(`#${currentID}`);
+            var currentCardNum = currentCard.attr("card-num");
 
-            var equalCard = nums.find((id) => {
-                $(`#${id}`).attr("card-num") == cardNum;
+            var equalCardID = checkedIDs.find((id) => {
+                return $(`#${id}`).attr("card-num") == currentCardNum;
             });
 
-            if (equalCard != undefined) {
+            if (equalCardID != undefined) {
                 win = true;
-                highlightCard(card);
-                highlightCard($(`#${equalCard}`));
+                highlightCard(currentCard);
+                highlightCard($(`#${equalCardID}`));
             }
 
-            nums.push(card.attr("id"));
-
-            turnUpCard(card);
+            checkedIDs.push(currentID);
+            turnUpCard(currentCard);
         }
 
         if (win) {
@@ -172,6 +172,8 @@ $('document').ready(function () {
             turnDownCard(card);
         }
 
+        // Shuffle cards
+
         deselectAll();
         disableButton();
     }
@@ -181,7 +183,9 @@ $('document').ready(function () {
     }
 
     var highlightCard = function (card) {
-        console.log(card.attr("id"));
+        card.toggleClass("bg-dark", false);
+        card.toggleClass("bg-primary", false);
+        card.toggleClass("bg-warning", true);
     }
 
     var enableButton = function () {
@@ -203,11 +207,29 @@ $('document').ready(function () {
     }
 
     var onWin = function () {
-        console.log("You Win!");
+        var body = $("<div></div>")
+            .addClass("card-body text-center")
+            .append($("<h3></h3>")
+                .addClass("card-title text-success text-center")
+                .text("You win!")
+            );
+
+        var card = $("<div></div>")
+            .addClass("card")
+            .append(body);
+
+        $('#win-alert').append(card);
+
+        disableButton();
+        $('#restart-button').toggleClass("btn-danger", false).toggleClass("btn-success", true);
     }
+
+    $('#restart-button').click(function () {
+        setupGame();
+    });
+
+    turnOverButton.click(buttonClicked);
 
     // Start
     setupGame();
-
-    //settingsModal.modal('show');
 });

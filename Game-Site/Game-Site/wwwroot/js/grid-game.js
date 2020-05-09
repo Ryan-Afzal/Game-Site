@@ -26,19 +26,22 @@
                 .addClass("card-text text-center")
                 .text(`Score: ${score(global_n, global_moves, global_endTime - global_startTime)}`)
             )
-            .append($("<button></button>")
+            /*.append($("<button></button>")
                 .addClass("btn btn-dark")
                 .attr("type", "button")
                 .attr("data-toggle", "modal")
                 .attr("data-target", "#difficultySelect")
                 .text("Play Again")
-            );
+            )*/
+            ;
 
         var card = $("<div></div>")
             .addClass("card")
             .append(body);
 
         $('#win-alert').append(card);
+
+        $('#restart-button').toggleClass("btn-danger", false).toggleClass("btn-success", true);
     }
 
     var move = function () {
@@ -225,6 +228,7 @@
         global_interval = null;
 
         $("#win-alert").empty();
+        $('#restart-button').toggleClass("btn-danger", true).toggleClass("btn-success", false);
         createRandomGrid(n);
 
         global_n = n;

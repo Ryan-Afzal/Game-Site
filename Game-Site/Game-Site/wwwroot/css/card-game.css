@@ -1,9 +1,11 @@
 ﻿.game-card {
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .game-card-text {
-
+   
 }
 
 /* game-card bg-dark */
