@@ -42,6 +42,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-page="/Index">Home</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-page="/About">About</a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link text-light dropdown-toggle" href="#" id="navbarGamesMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Games</a>
 
@@ -60,6 +63,11 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            <div class="row">
+                <div class="col-12">
+                    <br />
+                </div>
+            </div>
             @RenderBody()
         </main>
     </div>

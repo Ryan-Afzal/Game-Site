@@ -27,7 +27,7 @@ $('document').ready(function () {
         turnedOver = false;
 
         n = 18;
-        k = 4;
+        k = 3;
 
         $("#win-alert").empty();
         $('#restart-button').toggleClass("btn-danger", true).toggleClass("btn-success", false);
@@ -86,7 +86,7 @@ $('document').ready(function () {
         var node = $("<div></div>")
             .attr("id", `card-${n}`)
             .attr("card-num", Math.floor(n / 2) + 1)
-            .addClass("game-card bg-dark")
+            .addClass("game-card game-card-active bg-dark")
             .attr("style", `width: ${width}px; height: ${height}px;`)
             .append($("<h2></h2>")
                 .addClass("game-card-text text-light")
@@ -181,18 +181,30 @@ $('document').ready(function () {
         }
 
         // Shuffle cards
+        for (var i = selectedCards.length - 1; i > 1; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+
+            var idA = selectedCards[i];
+            var idB = selectedCards[j];
+
+            swap($(`#${idA}`).parent(), $(`#${idB}`).parent());
+        }
 
         deselectAll();
         disableButton();
     }
 
-    var swap = function (elementA, elementB) {// Probably won't work
+    var swap = function (elementA, elementB) {
         var parentA = elementA.parent();
-
-        var indexA = parentA.index(elementA);
-
+        var indexA = parentA.children().index(elementA);
+        
         elementA.insertAfter(elementB);
-        elementB.insertAfter(parentA.get(indexA == 0 ? 0 : indexA - 1));
+        
+        if (indexA == 0) {
+            elementB.insertBefore(parentA.children().get(0));
+        } else {
+            elementB.insertAfter(parentA.children().get(indexA - 1));
+        }
     }
 
     var turnDownCard = function (card) {
@@ -203,18 +215,20 @@ $('document').ready(function () {
         card.toggleClass("bg-dark", false);
         card.toggleClass("bg-primary", false);
         card.toggleClass("bg-warning", true);
+        card.toggleClass("game-card-active", false);
+        card.toggleClass("game-card-win", true);
     }
 
     var enableButton = function () {
         turnOverButton.toggleClass("disabled", false);
         turnOverButton.removeAttr("disabled");
-        turnOverButton.off("click");
+        turnOverButton.click(buttonClicked);
     }
 
     var disableButton = function () {
         turnOverButton.toggleClass("disabled", true);
         turnOverButton.attr("disabled", "disabled");
-        turnOverButton.click(buttonClicked);
+        turnOverButton.off("click");
     }
 
     var buttonClicked = function () {
