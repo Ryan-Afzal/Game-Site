@@ -1,5 +1,9 @@
 ﻿"use strict;"
 
+function shuffle(array) {
+    array.sort(() => Math.random() - 0.5);
+}
+
 $('document').ready(function () {
     // jQuery Objects
     var settingsModal = $("#settingsModal");
@@ -41,8 +45,6 @@ $('document').ready(function () {
         var rows = 3;
         var cols = 6;
 
-        var i = 0;
-
         var width = column.width();
         var spacing = grid.attr('cellspacing');
         var padding = grid.attr('cellpadding');
@@ -50,11 +52,17 @@ $('document').ready(function () {
         var width = (width - (padding * 2 * cols) - (spacing * (cols - 1))) / cols;
         var height = width * 3 / 2;
 
+        var indexes = [...Array(rows * cols).keys()];
+
+        shuffle(indexes);
+
+        var i = 0;
+
         for (var r = 0; r < rows; r++) {
             var row = $("<tr></tr>");
 
             for (var c = 0; c < cols; c++) {
-                var card = createCard(i, width, height);
+                var card = createCard(indexes[i], width, height);
 
                 card.click(function () {
                     cardClicked($(this));
@@ -178,6 +186,15 @@ $('document').ready(function () {
         disableButton();
     }
 
+    var swap = function (elementA, elementB) {// Probably won't work
+        var parentA = elementA.parent();
+
+        var indexA = parentA.index(elementA);
+
+        elementA.insertAfter(elementB);
+        elementB.insertAfter(parentA.get(indexA == 0 ? 0 : indexA - 1));
+    }
+
     var turnDownCard = function (card) {
         card.children(".game-card-text").text("?");
     }
@@ -191,11 +208,13 @@ $('document').ready(function () {
     var enableButton = function () {
         turnOverButton.toggleClass("disabled", false);
         turnOverButton.removeAttr("disabled");
+        turnOverButton.off("click");
     }
 
     var disableButton = function () {
         turnOverButton.toggleClass("disabled", true);
         turnOverButton.attr("disabled", "disabled");
+        turnOverButton.click(buttonClicked);
     }
 
     var buttonClicked = function () {
