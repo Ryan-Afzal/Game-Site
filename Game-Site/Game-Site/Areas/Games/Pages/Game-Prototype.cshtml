@@ -1,0 +1,21 @@
+﻿@page
+@model Grid_Game.Areas.Games.Pages.Game_PrototypeModel
+@{
+    ViewData["Title"] = "Game Prototype";
+}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-warning">This is a prototype page; you should never see it deployed.</div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+
+    </div>
+</div>
+
+@section Scripts {
+    <environment include="Development">
+        <script src="~/js/game-prototype.js" asp-append-version="true"></script>
+    </environment>
+}
