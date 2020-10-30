@@ -7,8 +7,6 @@
 
   <ItemGroup>
     <None Remove="Scripts\game-prototype.ts" />
-    <None Remove="Scripts\linalg.ts" />
-    <None Remove="Scripts\strategy-game.ts" />
   </ItemGroup>
 
   <ItemGroup>
