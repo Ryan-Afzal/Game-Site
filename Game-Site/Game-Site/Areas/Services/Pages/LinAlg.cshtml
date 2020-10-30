@@ -3,55 +3,25 @@
 @{
     ViewData["Title"] = "LinAlg Calculator";
 }
+    <div class="row">&nbsp;</div>
+    <div class="row">
 
-<div class="row">
-    <!-- put your stuff here lol -->
+        <div id="center-pane" class="col-9 col-sm-9 col-md-8 col-lg-8 col-xl-8">
+            <div id="console-output-container">
+                <div id="console-output"></div>
+            </div>
 
-    <div class="col-12">
-        <h1>LinAlg Calculator</h1>
+            <div class="console-input-container">
+                <div id="text-input-container">
+                    <div class="text-input">
+                        <div class="text-input-spacer">
+                            <div id="console-input" class="text-input-control" role="textbox" contenteditable="true" placeholder="Enter expression here"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
     </div>
-</div>
-<div class="row">
-    <div class="col-12">
-        <br />
-    </div>
-</div>
-<div class="row">
-    <div class="col-12">
-        <p>
-            LinAlg Calculator is a free, online, console-based linear algebra calculator developed by Brandon Chen.
-        </p>
-    </div>
-</div>
-<div class="row">
-    <div class="col-12">
-        <br />
-    </div>
-</div>
-<div class="row">
-    <div class="col-12">
-        <h6>Features</h6>
-        <ul>
-            <li>Fast, console-based math</li>
-            <li>Row operations on integer matrices</li>
-            <li>Reduction to REF and partial RREF forms with steps</li>
-            <li>Determinants for square matrices</li>
-            <li>More to come!</li>
-        </ul>
-    </div>
-</div>
-<div class="row">
-    <div class="col-12">
-        <br />
-    </div>
-</div>
-<div class="row">
-    <div class="col"></div>
-    <div class="col-6">
-        <a class="btn btn-block btn-primary" role="button" href="https://roollc.com/Services/LinAlg/Calc">Go to LinAlg Calculator</a>
-    </div>
-    <div class="col"></div>
-</div>
 
 
 @section Scripts {
