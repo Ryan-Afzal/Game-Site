@@ -1,0 +1,20 @@
+﻿@page
+@model Grid_Game.Areas.Services.Pages.LinAlgModel
+@{
+    ViewData["Title"] = "LinAlg Calculator";
+}
+
+<div class="row">
+    <!-- put your stuff here lol -->
+</div>
+
+@section Scripts {
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/linalg.css" asp-append-version="true" />
+        <script src="~/js/linalg.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/linalg.min.css" asp-append-version="true" />
+        <script src="~/js/linalg.min.js" asp-append-version="true"></script>
+    </environment>
+}
