@@ -1,5 +1,7 @@
-﻿class Numbers {
-    abs(n: number): number {
+﻿"use strict";
+
+class Numbers {
+    static abs(n: number): number {
         if (n > 0) {
             return n;
         } else {
@@ -7,7 +9,7 @@
         }
     }
     // Finds gcd of i and j (want my own implementation to make sure negatives are dealt with correctly and to show off)
-    gcd(i: number, j: number): number {
+    static gcd(i: number, j: number): number {
         // Take absolute values
         let iPos: number = this.abs(i);
         let jPos: number = this.abs(j);
@@ -24,7 +26,7 @@
         }
     }
     // Finds gcd of integers in an integer array arr
-    gcdArr(arr: number[]): number {
+    static gcdArr(arr: number[]): number {
         let gcd: number = this.abs(arr[0]);
         for (let i of arr) {
             gcd = this.gcd(gcd, i);
@@ -44,6 +46,58 @@
             return i;
         } else {
             return j;
+        }
+    }
+
+}
+class Fraction {
+    N: number;
+    D: number;
+    constructor(N: number, D: number) {
+        this.N = N;
+        this.D = D;
+        if (D == 0) {
+            try {
+                throw new Error('Denominator cannot be 0.');
+            }
+            catch (e) {
+                console.log(e);
+            }
+        }
+    }
+    multiply(c: number) {
+        this.N *= c;
+    }
+    multiplyFraction(f: Fraction) {
+        this.N *= f.N;
+        this.D *= f.D;
+    }
+    divide(c: number) {
+        if (c == 0) {
+            try {
+                throw new Error('Cannot divide by 0.');
+            }
+            catch (e) {
+                console.log(e);
+            }
+        }
+        this.D *= c;
+    }
+    simplify() {
+        let gcd: number = Numbers.gcd(this.N, this.D);
+        this.N /= gcd;
+        this.D /= gcd;
+        if (this.D < 0) {
+            this.N *= -1;
+            this.D *= -1;
+        }
+    }
+    toString(): String {
+        this.simplify();
+        if (this.D == 1) {
+            return this.N + "";
+        } else {
+            return this.N + "/" + this.D;
         }
     }
 }
