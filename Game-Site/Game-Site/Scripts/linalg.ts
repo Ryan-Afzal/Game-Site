@@ -92,12 +92,45 @@ class Fraction {
             this.D *= -1;
         }
     }
-    toString(): String {
+    public toString(): String {
         this.simplify();
         if (this.D == 1) {
             return this.N + "";
         } else {
             return this.N + "/" + this.D;
+        }
+    }
+}
+class Matrix {
+    vals;
+    // Position of leftmost nonzero number in each row
+    pivots: number[];
+    M: number;
+    N: number;
+    constructor(M: number, N: number) {
+        this.M = M;
+        this.N = N;
+        this.vals = new Array(M);
+        for (let i = 0; i < M; i++) {
+            this.vals[i] = new Array(N);
+        }
+        this.pivots = new Array(M);
+        for (let i = 0; i < M; i++) {
+            this.pivots[i] = N;
+        }
+    }
+    setValue(val: number, i: number, j: number) {
+        this.vals[i][j] = val;
+        // FInd pivot (inefficient, should improve)
+        let isNonZero: boolean = false;
+        for (let k = 0; k < this.N; k++) {
+            if (this.vals[i][k] != 0 && !isNonZero) {
+                isNonZero = true;
+                this.pivots[i] = k;
+            }
+        }
+        if (!isNonZero) {
+            this.pivots[i] = this.N;
         }
     }
 }
