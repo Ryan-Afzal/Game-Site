@@ -328,4 +328,32 @@ class Matrix {
         multiplier.simplify();
         return [multiplier, str];
     }
+    toRREF(print: boolean): string {
+        let str: string = "";
+        this.toREF(print);
+        // Go through rows and cancel with rows above them
+        for (let i = this.M - 1; i >= 0; i--) {
+            if (this.pivots[i] < this.N) {
+                for (let j = 0; j < i; j++) {
+                    if (this.vals[j][this.pivots[i]] != 0) {
+                        this.cancel(i, j, print);
+                        if (print) {
+                            str += "\n";
+                            str += (this.toString() + "\n");
+                        }
+                    }
+                }
+            }
+        }
+        return str;
+    }
+    copy(): Matrix {
+        let ret: Matrix = new Matrix(this.M, this.N);
+        for (let i = 0; i < this.M; i++) {
+            for (let j = 0; j < this.N; j++) {
+                ret.setValue(this.vals[i][j], i, j);
+            }
+        }
+        return ret;
+    }
 }
