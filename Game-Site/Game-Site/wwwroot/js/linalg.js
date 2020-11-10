@@ -12,6 +12,7 @@ $(function () {
     var matrix;
     var dimM;
     var dimN;
+    var quitNow = false;
     $("#console-input").keydown(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == 13 && !event.shiftKey) {
@@ -39,12 +40,134 @@ $(function () {
                         matrix.setValue(val, stepNum - 1, j);
                     }
                 }
+                else if (!quitNow) {
+                    var inputArr = input.split(" ");
+                    if (inputArr[0] === ("H")) {
+                        printMessage("", "Here are the commands: ");
+                        printMessage("", "\"H\": Displays the list of commands.");
+                        printMessage("", "\"S [i] [j]\": Swaps rows [i] and [j].");
+                        printMessage("", "\"X [i] [scale]\": Multiplies the elements in row [i] by the integer [scale].");
+                        printMessage("", "\"A [i] [j]\": Adds row [i] to row [j].");
+                        printMessage("", "\"D [i]\": Divides the row [i] by the greatest common divisor of numbers in the row and makes the first nonzero element in the row positive.");
+                        printMessage("", "\"C [i] [j]\": Adds one of row [i] and row [j] by a scalar multiple of the other row to simplify it. Prints out the operations used. For now should only run after descaling all rows");
+                        printMessage("", "\"REF\": Simplifies to REF form and shows work.");
+                        printMessage("", "\"RREF\": Simplifies to RREF form and shows work.");
+                        printMessage("", "\"Q\": End the program.");
+                    }
+                    else if (inputArr[0] === "S") {
+                        if (inputArr.length < 3) {
+                            printMessage("", "Error: You need at least 2 arguments for this command");
+                        }
+                        var i = parseInt(inputArr[1]);
+                        var j = parseInt(inputArr[2]);
+                        if (!Numbers.isInRange(i, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        if (!Numbers.isInRange(j, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        var str = matrix.swap(i - 1, j - 1, true);
+                        printMessage("", str);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    }
+                    else if (inputArr[0] === "X") {
+                        if (inputArr.length < 3) {
+                            printMessage("", "Error: You need at least 2 arguments for this command");
+                        }
+                        var i = parseInt(inputArr[1]);
+                        var scale = parseInt(inputArr[2]);
+                        if (!Numbers.isInRange(i, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        matrix.scale(i - 1, scale);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    }
+                    else if (inputArr[0] === "A") {
+                        if (inputArr.length < 3) {
+                            printMessage("", "Error: You need at least 2 arguments for this command");
+                        }
+                        var i = parseInt(inputArr[1]);
+                        var j = parseInt(inputArr[2]);
+                        if (!Numbers.isInRange(i, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        if (!Numbers.isInRange(j, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        matrix.addRow(i - 1, j - 1);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    }
+                    else if (inputArr[0] === "D") {
+                        if (inputArr.length < 2) {
+                            printMessage("", "Error: You need at least 1 argument for this command");
+                        }
+                        var i = parseInt(inputArr[1]);
+                        if (!Numbers.isInRange(i, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        matrix.descale(i - 1);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    }
+                    else if (inputArr[0] === "C") {
+                        if (inputArr.length < 3) {
+                            printMessage("", "Error: You need at least 2 arguments for this command");
+                        }
+                        var i = parseInt(inputArr[1]);
+                        var j = parseInt(inputArr[2]);
+                        if (!Numbers.isInRange(i, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        if (!Numbers.isInRange(j, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        var str = matrix.cancel(i - 1, j - 1, true)[1];
+                        printMessage("", str);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    }
+                    else if (inputArr[0] === "REF") {
+                        var str = matrix.toREF(true)[1];
+                        printMessage("", str);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    }
+                    else if (inputArr[0] === "RREF") {
+                        var str = matrix.toRREF(true);
+                        printMessage("", str);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    }
+                    else if (inputArr[0] === "Q") {
+                        quitNow = true;
+                    }
+                    else {
+                        printMessage("", "Error: \"" + input + "\" is not a valid command. Press \"H\" to see the list of valid commands. ");
+                    }
+                }
                 if (stepNum < dimM) {
                     printMessage("", "Enter the entries of row #" + (stepNum + 1) + ": ");
                 }
-                else if (stepNum == dimM) {
-                    printMessage("", "The matrix you entered is below:");
-                    printMessage("", matrix);
+                else {
+                    if (stepNum == dimM) {
+                        printMessage("", "The matrix you entered is below:");
+                        printMessage("", matrix.toString());
+                    }
+                    printMessage("", "<br/>");
+                    if (!quitNow) {
+                        printMessage("", "Enter next command (enter \"H\" for help): ");
+                    }
                 }
                 event.preventDefault();
                 stepNum++;
@@ -104,7 +227,7 @@ var Numbers = /** @class */ (function () {
         return gcd;
     };
     // Checks if an integer is in a range (inclusive), returns boolean
-    Numbers.prototype.isInRange = function (num, min, max) {
+    Numbers.isInRange = function (num, min, max) {
         if (num <= max && num >= min) {
             return true;
         }
@@ -118,6 +241,29 @@ var Numbers = /** @class */ (function () {
         else {
             return j;
         }
+    };
+    // Returns the larger of the two numbers.
+    Numbers.max = function (i, j) {
+        if (i > j) {
+            return i;
+        }
+        else {
+            return j;
+        }
+    };
+    // Returns the number of digits in a number
+    Numbers.digitNum = function (i) {
+        var digits = 0;
+        if (i < 0) {
+            digits++;
+        }
+        i = Numbers.abs(i);
+        while (i >= 10) {
+            i = i / 10;
+            digits++;
+        }
+        digits++;
+        return digits;
     };
     return Numbers;
 }());
@@ -201,12 +347,23 @@ var Matrix = /** @class */ (function () {
     };
     Matrix.prototype.toString = function () {
         var str = "";
+        var colDigits = [];
+        for (var j = 0; j < this.N; j++) {
+            colDigits.push(0);
+            for (var i = 0; i < this.M; i++) {
+                if (colDigits[j] < Numbers.digitNum(this.vals[i][j])) {
+                    colDigits[j] = Numbers.digitNum(this.vals[i][j]);
+                }
+            }
+        }
         for (var i = 0; i < this.M; i++) {
             for (var j = 0; j < this.N; j++) {
                 str += this.vals[i][j];
-                str += "\t";
+                for (var k = Numbers.digitNum(this.vals[i][j]); k <= Numbers.max(colDigits[j], 2); k++) {
+                    str += "&nbsp;";
+                }
             }
-            str += "<br />";
+            str += "<br/>";
         }
         return str;
     };
@@ -303,8 +460,8 @@ var Matrix = /** @class */ (function () {
             var aScaleFrac = new Fraction(1, aScale);
             multiplier.multiply(aScale);
             if (print) {
-                str += ("R_" + (a + 1) + " -> (" + aScaleFrac + ") * R_" + (a + 1) + "<br />");
-                str += (this.toString() + "<br />");
+                str += ("R_" + (a + 1) + " -> (" + aScaleFrac + ") * R_" + (a + 1) + "<br/>");
+                str += (this.toString() + "<br/>");
             }
         }
         var bScale = this.descale(b);
@@ -312,8 +469,8 @@ var Matrix = /** @class */ (function () {
             var bScaleFrac = new Fraction(1, bScale);
             multiplier.multiply(bScale);
             if (print) {
-                str += ("R_" + (b + 1) + " -> (" + bScaleFrac + ") * R_" + (b + 1) + "<br />");
-                str += (this.toString() + "<br />");
+                str += ("R_" + (b + 1) + " -> (" + bScaleFrac + ") * R_" + (b + 1) + "<br/>");
+                str += (this.toString() + "<br/>");
             }
         }
         // Fraction written in form scaleA_N/scaleA_D
@@ -367,8 +524,8 @@ var Matrix = /** @class */ (function () {
                     this.swap(i, firstIndex, print);
                     multiplier.multiply(-1);
                     if (print) {
-                        str += "<br />";
-                        str += (this.toString() + "<br />");
+                        str += "<br/>";
+                        str += (this.toString() + "<br/>");
                     }
                 }
                 // Now we can assume the index we want to apply this.cancel() with is at i
@@ -377,8 +534,8 @@ var Matrix = /** @class */ (function () {
                     multiplier.multiplyFraction(cancelRet[0]);
                     if (print) {
                         str += cancelRet[1];
-                        str += "<br />";
-                        str += (this.toString() + "<br />");
+                        str += "<br/>";
+                        str += (this.toString() + "<br/>");
                     }
                     multiplier.simplify();
                 }
@@ -393,16 +550,19 @@ var Matrix = /** @class */ (function () {
     };
     Matrix.prototype.toRREF = function (print) {
         var str = "";
-        this.toREF(print);
+        if (print) {
+            str += this.toREF(print)[1];
+        }
         // Go through rows and cancel with rows above them
         for (var i = this.M - 1; i >= 0; i--) {
             if (this.pivots[i] < this.N) {
                 for (var j = 0; j < i; j++) {
                     if (this.vals[j][this.pivots[i]] != 0) {
-                        this.cancel(i, j, print);
+                        var cancelRet = this.cancel(i, j, print)[1];
                         if (print) {
-                            str += "<br />";
-                            str += (this.toString() + "<br />");
+                            str += cancelRet;
+                            str += "<br/>";
+                            str += (this.toString() + "<br/>");
                         }
                     }
                 }

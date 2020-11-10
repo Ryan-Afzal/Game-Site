@@ -13,6 +13,7 @@ $(() => {
     let matrix: Matrix;
     let dimM: number;
     let dimN: number;
+    let quitNow: boolean = false;
 
     $("#console-input").keydown(function (event) {
         let keycode = (event.keyCode ? event.keyCode : event.which);
@@ -41,12 +42,124 @@ $(() => {
                         let val: number = parseInt(inputArr[j], 10);
                         matrix.setValue(val, stepNum - 1, j);
                     }
+                } else if (!quitNow) {
+                    let inputArr: string[] = input.split(" ");
+                    if (inputArr[0] === ("H")) {
+                        printMessage("", "Here are the commands: ");
+                        printMessage("", "\"H\": Displays the list of commands.");
+                        printMessage("", "\"S [i] [j]\": Swaps rows [i] and [j].");
+                        printMessage("", "\"X [i] [scale]\": Multiplies the elements in row [i] by the integer [scale].");
+                        printMessage("", "\"A [i] [j]\": Adds row [i] to row [j].");
+                        printMessage("", "\"D [i]\": Divides the row [i] by the greatest common divisor of numbers in the row and makes the first nonzero element in the row positive.");
+                        printMessage("", "\"C [i] [j]\": Adds one of row [i] and row [j] by a scalar multiple of the other row to simplify it. Prints out the operations used. For now should only run after descaling all rows");
+                        printMessage("", "\"REF\": Simplifies to REF form and shows work.");
+                        printMessage("", "\"RREF\": Simplifies to RREF form and shows work.");
+                        printMessage("", "\"Q\": End the program.");
+                    } else if (inputArr[0] === "S") {
+                        if (inputArr.length < 3) {
+                            printMessage("", "Error: You need at least 2 arguments for this command");
+                        }
+                        let i: number = parseInt(inputArr[1]);
+                        let j: number = parseInt(inputArr[2]);
+                        if (!Numbers.isInRange(i, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        if (!Numbers.isInRange(j, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        let str: string = matrix.swap(i - 1, j - 1, true);
+                        printMessage("", str);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    } else if (inputArr[0] === "X") {
+                        if (inputArr.length < 3) {
+                            printMessage("", "Error: You need at least 2 arguments for this command");
+                        }
+                        let i: number = parseInt(inputArr[1]);
+                        let scale: number = parseInt(inputArr[2]);
+                        if (!Numbers.isInRange(i, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        matrix.scale(i - 1, scale);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    } else if (inputArr[0] === "A") {
+                        if (inputArr.length < 3) {
+                            printMessage("", "Error: You need at least 2 arguments for this command");
+                        }
+                        let i: number = parseInt(inputArr[1]);
+                        let j: number = parseInt(inputArr[2]);
+                        if (!Numbers.isInRange(i, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        if (!Numbers.isInRange(j, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        matrix.addRow(i - 1, j - 1);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    } else if (inputArr[0] === "D") {
+                        if (inputArr.length < 2) {
+                            printMessage("", "Error: You need at least 1 argument for this command");
+                        }
+                        let i: number = parseInt(inputArr[1]);
+                        if (!Numbers.isInRange(i, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        matrix.descale(i - 1);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    } else if (inputArr[0] === "C") {
+                        if (inputArr.length < 3) {
+                            printMessage("", "Error: You need at least 2 arguments for this command");
+                        }
+                        let i: number = parseInt(inputArr[1]);
+                        let j: number = parseInt(inputArr[2]);
+                        if (!Numbers.isInRange(i, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        if (!Numbers.isInRange(j, 1, dimM)) {
+                            printMessage("", "Error: Row numbers must be between 1 and " + dimM + " inclusive. ");
+                            return;
+                        }
+                        let str: string = matrix.cancel(i - 1, j - 1, true)[1];
+                        printMessage("", str);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    } else if (inputArr[0] === "REF") {
+                        let str: string = matrix.toREF(true)[1];
+                        printMessage("", str);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    } else if (inputArr[0] === "RREF") {
+                        let str: string = matrix.toRREF(true);
+                        printMessage("", str);
+                        printMessage("", "The resulting matrix is below:");
+                        printMessage("", matrix.toString());
+                    } else if (inputArr[0] === "Q") {
+                        quitNow = true;
+                    } else {
+                        printMessage("", "Error: \"" + input + "\" is not a valid command. Press \"H\" to see the list of valid commands. ");
+                    }
                 }
                 if (stepNum < dimM) {
                     printMessage("", "Enter the entries of row #" + (stepNum + 1) + ": ")
-                } else if (stepNum == dimM) {
-                    printMessage("", "The matrix you entered is below:");
-                    printMessage("", matrix);
+                } else {
+                    if (stepNum == dimM) {
+                        printMessage("", "The matrix you entered is below:");
+                        printMessage("", matrix.toString());
+                    }
+                    printMessage("", "<br/>");
+                    if (!quitNow) {
+                        printMessage("", "Enter next command (enter \"H\" for help): ");
+                    }
                 }
 
                 event.preventDefault();
@@ -68,6 +181,7 @@ function printMessage(head, message) {
                 $('<div />').addClass("output-text-head").html(head)
             )
             .append(
+
                 $('<div />').addClass("output-text").html(message)
             )
     );
@@ -110,7 +224,7 @@ class Numbers {
         return gcd;
     }
     // Checks if an integer is in a range (inclusive), returns boolean
-    isInRange(num: number, min: number, max: number): boolean {
+    static isInRange(num: number, min: number, max: number): boolean {
         if (num <= max && num >= min) {
             return true;
         }
@@ -124,7 +238,29 @@ class Numbers {
             return j;
         }
     }
+    // Returns the larger of the two numbers.
+    static max(i: number, j: number): number {
+        if (i > j) {
+            return i;
+        } else {
+            return j;
+        }
+    }
 
+    // Returns the number of digits in a number
+    static digitNum(i: number): number {
+        let digits: number = 0;
+        if (i < 0) {
+            digits++;
+        }
+        i = Numbers.abs(i);
+        while (i >= 10) {
+            i = i / 10; 
+            digits++;
+        }
+        digits++;
+        return digits;
+    }
 }
 class Fraction {
     N: number;
@@ -211,12 +347,23 @@ class Matrix {
     }
     public toString(): string {
         let str: string = "";
+        let colDigits: number[] = [];
+        for (let j = 0; j < this.N; j++) {
+            colDigits.push(0);
+            for (let i = 0; i < this.M; i++) {
+                if (colDigits[j] < Numbers.digitNum(this.vals[i][j])) {
+                    colDigits[j] = Numbers.digitNum(this.vals[i][j]);
+                }
+            }
+        }
         for (let i = 0; i < this.M; i++) {
             for (let j = 0; j < this.N; j++) {
                 str += this.vals[i][j];
-                str += "\t";
+                for (let k = Numbers.digitNum(this.vals[i][j]); k <= Numbers.max(colDigits[j],2); k++) {
+                    str += "&nbsp;";
+                }
             }
-            str += "<br />";
+            str += "<br/>";
         }
         return str;
     }
@@ -311,8 +458,8 @@ class Matrix {
             let aScaleFrac: Fraction = new Fraction(1, aScale);
             multiplier.multiply(aScale);
             if (print) {
-                str += ("R_" + (a + 1) + " -> (" + aScaleFrac + ") * R_" + (a + 1) + "<br />");
-                str += (this.toString() + "<br />");
+                str += ("R_" + (a + 1) + " -> (" + aScaleFrac + ") * R_" + (a + 1) + "<br/>");
+                str += (this.toString() + "<br/>");
             }
         }
         let bScale: number = this.descale(b);
@@ -320,8 +467,8 @@ class Matrix {
             let bScaleFrac: Fraction = new Fraction(1, bScale);
             multiplier.multiply(bScale);
             if (print) {
-                str += ("R_" + (b + 1) + " -> (" + bScaleFrac + ") * R_" + (b + 1) + "<br />");
-                str += (this.toString() + "<br />");
+                str += ("R_" + (b + 1) + " -> (" + bScaleFrac + ") * R_" + (b + 1) + "<br/>");
+                str += (this.toString() + "<br/>");
             }
         }
 
@@ -380,8 +527,8 @@ class Matrix {
                     this.swap(i, firstIndex, print);
                     multiplier.multiply(-1);
                     if (print) {
-                        str += "<br />";
-                        str += (this.toString() + "<br />");
+                        str += "<br/>";
+                        str += (this.toString() + "<br/>");
                     }
                 }
                 // Now we can assume the index we want to apply this.cancel() with is at i
@@ -390,8 +537,8 @@ class Matrix {
                     multiplier.multiplyFraction(cancelRet[0]);
                     if (print) {
                         str += cancelRet[1];
-                        str += "<br />";
-                        str += (this.toString() + "<br />");
+                        str += "<br/>";
+                        str += (this.toString() + "<br/>");
                     }
                     multiplier.simplify();
                 }
@@ -406,16 +553,19 @@ class Matrix {
     }
     toRREF(print: boolean): string {
         let str: string = "";
-        this.toREF(print);
+        if (print) {
+            str += this.toREF(print)[1]; 
+        }
         // Go through rows and cancel with rows above them
         for (let i = this.M - 1; i >= 0; i--) {
             if (this.pivots[i] < this.N) {
                 for (let j = 0; j < i; j++) {
                     if (this.vals[j][this.pivots[i]] != 0) {
-                        this.cancel(i, j, print);
+                        let cancelRet: string = this.cancel(i, j, print)[1];
                         if (print) {
-                            str += "<br />";
-                            str += (this.toString() + "<br />");
+                            str += cancelRet;
+                            str += "<br/>";
+                            str += (this.toString() + "<br/>");
                         }
                     }
                 }
