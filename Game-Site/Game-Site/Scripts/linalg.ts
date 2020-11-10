@@ -1,5 +1,81 @@
 ﻿"use strict";
 
+$(() => {
+    // Directions
+    printMessage("", "Welcome to the Linear Algebra program. ");
+    printMessage("", "Conventions: ");
+    printMessage("", "1. An M x N matrix contains M rows and N columns.");
+    printMessage("", "2. All indices are 1-based, meaning they start from 1 and count upwards");
+    printMessage("", "");
+    // End of directions, starts user input
+    printMessage("", "Enter the dimensions of the matrix (in the form \"M N\"): ");
+    let stepNum: number = 0;
+    let matrix: Matrix;
+    let dimM: number;
+    let dimN: number;
+
+    $("#console-input").keydown(function (event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == 13 && !event.shiftKey) {
+            let node = document.getElementById("console-input");
+            let input: string = node.textContent;
+
+            if (input.trim() == "") {
+                // Do Nothing
+            } else {
+                node.textContent = "";
+
+                printMessage(">> ", input);
+
+                // Get output
+                if (stepNum == 0) {
+                    let inputArr: string[] = input.split(" ");
+                    dimM = parseInt(inputArr[0]);
+                    dimN = parseInt(inputArr[1]);
+                    matrix = new Matrix(dimM, dimN);
+                    printMessage("", "Matrix has dimensions " + dimM + " x " + dimN + ". ");
+                    printMessage("", "You will now the entries of the matrix, separated by a single space. ");
+                } else if (stepNum <= dimM) {
+                    let inputArr: string[] = input.split(" ");
+                    for (let j = 0; j < dimN; j++) {
+                        let val: number = parseInt(inputArr[j], 10);
+                        matrix.setValue(val, stepNum - 1, j);
+                    }
+                }
+                if (stepNum < dimM) {
+                    printMessage("", "Enter the entries of row #" + (stepNum + 1) + ": ")
+                } else if (stepNum == dimM) {
+                    printMessage("", "The matrix you entered is below:");
+                    printMessage("", matrix);
+                }
+
+                event.preventDefault();
+                stepNum++;
+            }
+        }
+    });
+});
+
+/*
+ * Prints a message to the console.
+ */
+function printMessage(head, message) {
+    var output = $("#console-output");
+
+    output.append(
+        $('<div />').addClass("output-text-container")
+            .append(
+                $('<div />').addClass("output-text-head").html(head)
+            )
+            .append(
+                $('<div />').addClass("output-text").html(message)
+            )
+    );
+
+    $("#console-output-container").scrollTop(output[0].scrollHeight);
+}
+
+
 class Numbers {
     static abs(n: number): number {
         if (n > 0) {
@@ -140,7 +216,7 @@ class Matrix {
                 str += this.vals[i][j];
                 str += "\t";
             }
-            str += "\n";
+            str += "<br />";
         }
         return str;
     }
@@ -235,8 +311,8 @@ class Matrix {
             let aScaleFrac: Fraction = new Fraction(1, aScale);
             multiplier.multiply(aScale);
             if (print) {
-                str += ("R_" + (a + 1) + " -> (" + aScaleFrac + ") * R_" + (a + 1) + "\n");
-                str += (this.toString() + "\n");
+                str += ("R_" + (a + 1) + " -> (" + aScaleFrac + ") * R_" + (a + 1) + "<br />");
+                str += (this.toString() + "<br />");
             }
         }
         let bScale: number = this.descale(b);
@@ -244,8 +320,8 @@ class Matrix {
             let bScaleFrac: Fraction = new Fraction(1, bScale);
             multiplier.multiply(bScale);
             if (print) {
-                str += ("R_" + (b + 1) + " -> (" + bScaleFrac + ") * R_" + (b + 1) + "\n");
-                str += (this.toString() + "\n");
+                str += ("R_" + (b + 1) + " -> (" + bScaleFrac + ") * R_" + (b + 1) + "<br />");
+                str += (this.toString() + "<br />");
             }
         }
 
@@ -304,8 +380,8 @@ class Matrix {
                     this.swap(i, firstIndex, print);
                     multiplier.multiply(-1);
                     if (print) {
-                        str += "\n";
-                        str += (this.toString() + "\n");
+                        str += "<br />";
+                        str += (this.toString() + "<br />");
                     }
                 }
                 // Now we can assume the index we want to apply this.cancel() with is at i
@@ -314,8 +390,8 @@ class Matrix {
                     multiplier.multiplyFraction(cancelRet[0]);
                     if (print) {
                         str += cancelRet[1];
-                        str += "\n";
-                        str += (this.toString() + "\n");
+                        str += "<br />";
+                        str += (this.toString() + "<br />");
                     }
                     multiplier.simplify();
                 }
@@ -338,8 +414,8 @@ class Matrix {
                     if (this.vals[j][this.pivots[i]] != 0) {
                         this.cancel(i, j, print);
                         if (print) {
-                            str += "\n";
-                            str += (this.toString() + "\n");
+                            str += "<br />";
+                            str += (this.toString() + "<br />");
                         }
                     }
                 }
