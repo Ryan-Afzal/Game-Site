@@ -33,7 +33,11 @@ $(() => {
                     let inputArr: string[] = input.split(" ");
                     dimM = parseInt(inputArr[0]);
                     dimN = parseInt(inputArr[1]);
-                    matrix = new Matrix(dimM, dimN);
+                    if (dimM == dimN) {
+                        matrix = new SquareMatrix(dimN);
+                    } else {
+                        matrix = new Matrix(dimM, dimN);
+                    }
                     printMessage("", "Matrix has dimensions " + dimM + " x " + dimN + ". ");
                     printMessage("", "You will now the entries of the matrix, separated by a single space. ");
                 } else if (stepNum <= dimM) {
@@ -54,6 +58,7 @@ $(() => {
                         printMessage("", "\"C [i] [j]\": Adds one of row [i] and row [j] by a scalar multiple of the other row to simplify it. Prints out the operations used. For now should only run after descaling all rows");
                         printMessage("", "\"REF\": Simplifies to REF form and shows work.");
                         printMessage("", "\"RREF\": Simplifies to RREF form and shows work.");
+                        printMessage("", "\"DET\": Prints out the determinant.");
                         printMessage("", "\"Q\": End the program.");
                     } else if (inputArr[0] === "S") {
                         if (inputArr.length < 3) {
@@ -143,6 +148,12 @@ $(() => {
                         printMessage("", str);
                         printMessage("", "The resulting matrix is below:");
                         printMessage("", matrix.toString());
+                    } else if (inputArr[0] === "DET") {
+                        if (matrix instanceof SquareMatrix) {
+                            printMessage("", "Determinant is: " + matrix.computeDet());
+                        } else {
+                            printMessage("", "Error: Determinant of non-square matrix is undefined.");
+                        }
                     } else if (inputArr[0] === "Q") {
                         quitNow = true;
                     } else {
@@ -582,4 +593,16 @@ class Matrix {
         }
         return ret;
     }
+}
+class SquareMatrix extends Matrix {
+
+    constructor(N: number) {
+        super(N, N);
+    }
+
+    computeDet(): Fraction {
+        let copy: Matrix = this.copy();
+        return copy.toREF(false)[0];
+    }
+
 }

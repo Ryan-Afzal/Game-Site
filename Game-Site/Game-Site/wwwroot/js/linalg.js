@@ -1,4 +1,17 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 $(function () {
     // Directions
     printMessage("", "Welcome to the Linear Algebra program. ");
@@ -29,7 +42,12 @@ $(function () {
                     var inputArr = input.split(" ");
                     dimM = parseInt(inputArr[0]);
                     dimN = parseInt(inputArr[1]);
-                    matrix = new Matrix(dimM, dimN);
+                    if (dimM == dimN) {
+                        matrix = new SquareMatrix(dimN);
+                    }
+                    else {
+                        matrix = new Matrix(dimM, dimN);
+                    }
                     printMessage("", "Matrix has dimensions " + dimM + " x " + dimN + ". ");
                     printMessage("", "You will now the entries of the matrix, separated by a single space. ");
                 }
@@ -148,6 +166,14 @@ $(function () {
                         printMessage("", str);
                         printMessage("", "The resulting matrix is below:");
                         printMessage("", matrix.toString());
+                    }
+                    else if (inputArr[0] === "DET") {
+                        if (matrix instanceof SquareMatrix) {
+                            printMessage("", "Determinant is: " + matrix.computeDet());
+                        }
+                        else {
+                            printMessage("", "Error: Determinant of non-square matrix is undefined.");
+                        }
                     }
                     else if (inputArr[0] === "Q") {
                         quitNow = true;
@@ -581,4 +607,15 @@ var Matrix = /** @class */ (function () {
     };
     return Matrix;
 }());
+var SquareMatrix = /** @class */ (function (_super) {
+    __extends(SquareMatrix, _super);
+    function SquareMatrix(N) {
+        return _super.call(this, N, N) || this;
+    }
+    SquareMatrix.prototype.computeDet = function () {
+        var copy = this.copy();
+        return copy.toREF(false)[0];
+    };
+    return SquareMatrix;
+}(Matrix));
 //# sourceMappingURL=linalg.js.map
