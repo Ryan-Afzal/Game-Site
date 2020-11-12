@@ -70,6 +70,7 @@ $(function () {
                         printMessage("", "\"C [i] [j]\": Adds one of row [i] and row [j] by a scalar multiple of the other row to simplify it. Prints out the operations used. For now should only run after descaling all rows");
                         printMessage("", "\"REF\": Simplifies to REF form and shows work.");
                         printMessage("", "\"RREF\": Simplifies to RREF form and shows work.");
+                        printMessage("", "\"DET\": Prints out the determinant.");
                         printMessage("", "\"Q\": End the program.");
                     }
                     else if (inputArr[0] === "S") {

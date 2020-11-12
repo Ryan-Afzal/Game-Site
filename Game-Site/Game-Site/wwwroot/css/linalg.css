@@ -37,7 +37,7 @@
 }
 
 #text-input-container {
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
     background-color: #FFFFFF;
     min-height: 38px;
     overflow-x: hidden;
@@ -85,6 +85,9 @@
 
 #center-pane {
     height: 100%;
+    border-style: solid;
+    border-color:navy;
+    border-width:3px;
 }
 
 button.text-input-control {
