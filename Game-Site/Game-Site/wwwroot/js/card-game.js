@@ -5,269 +5,6 @@ function shuffle(array) {
     array.sort(() => Math.random() - 0.5);
 }
 
-$('document').ready(function () {
-    // jQuery Objects
-    var settingsModal = $("#settingsModal");
-    var settingsOk = $("#settingsModalOk");
-    var turnOverButton = $("#turn-over-button");
-
-    // Variables
-    var cards;
-    var selectedCards;// Array of IDs of selected cards
-
-    var turnedOver;
-
-    var n;
-    var k;
-    
-    // Functions
-
-    var setupGame = function () {
-        cards = [];
-        selectedCards = [];
-        turnedOver = false;
-
-        n = 18;
-        k = 3;
-
-        $("#win-alert").empty();
-        $('#restart-button').toggleClass("btn-danger", true).toggleClass("btn-success", false);
-        disableButton();
-
-        createCardDeck();
-    }
-
-    var createCardDeck = function () {
-        var column = $("#card-grid-col");
-        var grid = $("#card-grid");
-        var body = $("#card-grid-body");
-        body.empty();
-
-        var rows = 3;
-        var cols = 6;
-
-        var width = column.width();
-        var spacing = grid.attr('cellspacing');
-        var padding = grid.attr('cellpadding');
-
-        var width = (width - (padding * 2 * cols) - (spacing * (cols - 1))) / cols;
-        var height = width * 3 / 2;
-
-        var indexes = [...Array(rows * cols).keys()];
-
-        shuffle(indexes);
-
-        var i = 0;
-
-        for (var r = 0; r < rows; r++) {
-            var row = $("<tr></tr>");
-
-            for (var c = 0; c < cols; c++) {
-                var card = createCard(indexes[i], width, height);
-
-                card.click(function () {
-                    cardClicked($(this));
-                });
-
-                cards.push(card);
-
-                row.append(
-                    $("<td></td>")
-                    .append(card)
-                );
-
-                i++;
-            }
-
-            body.append(row);
-        }
-    }
-
-    var createCard = function (n, width, height) {
-        var node = $("<div></div>")
-            .attr("id", `card-${n}`)
-            .attr("card-num", Math.floor(n / 2) + 1)
-            .addClass("game-card game-card-active bg-dark")
-            .attr("style", `width: ${width}px; height: ${height}px;`)
-            .append($("<h2></h2>")
-                .addClass("game-card-text text-light")
-                .text("?")
-            );
-        
-        return node;
-    }
-
-    var cardClicked = function (card) {
-        if (!turnedOver) {
-            if (selectedCards.indexOf(card.attr("id")) == -1) {
-                if (selectedCards.length < k) {
-                    selectCard(card);
-                }
-            } else {
-                deselectCard(card);
-            }
-        }
-    }
-
-    var selectCard = function (card) {
-        selectedCards.push(card.attr("id"));
-        
-        // Start 'Selected effects
-        card.toggleClass("bg-dark", false);
-        card.toggleClass("bg-primary", true);
-
-        if (selectedCards.length == k) {
-            enableButton();
-        }
-    }
-
-    var deselectCard = function (card) {
-        var index = selectedCards.indexOf(card.attr("id"));
-        selectedCards.splice(index, 1);
-
-        // Stop 'Selected' effects
-        card.toggleClass("bg-dark", true);
-        card.toggleClass("bg-primary", false);
-
-        if (selectedCards.length < k) {
-            disableButton();
-        }
-    }
-
-    var deselectAll = function () {
-        while (selectedCards.length > 0) {
-            deselectCard($(`#${selectedCards[0]}`));
-        }
-    }
-
-    var turnUpAll = function () {
-        turnedOver = true;
-        var checkedIDs = [];
-        var win = false;
-
-        for (var i = 0; i < selectedCards.length; i++) {
-            var currentID = selectedCards[i];
-            var currentCard = $(`#${currentID}`);
-            var currentCardNum = currentCard.attr("card-num");
-
-            var equalCardID = checkedIDs.find((id) => {
-                return $(`#${id}`).attr("card-num") == currentCardNum;
-            });
-
-            if (equalCardID != undefined) {
-                win = true;
-                highlightCard(currentCard);
-                highlightCard($(`#${equalCardID}`));
-            }
-
-            checkedIDs.push(currentID);
-            turnUpCard(currentCard);
-        }
-
-        if (win) {
-            onWin();
-        }
-    }
-
-    var turnUpCard = function (card) {
-        card.children(".game-card-text").text(card.attr("card-num"));
-    }
-
-    var turnDownAll = function () {
-        turnedOver = false;
-
-        for (var i = 0; i < selectedCards.length; i++) {
-            var card = $(`#${selectedCards[i]}`);
-            turnDownCard(card);
-        }
-
-        // Shuffle cards
-        for (var i = selectedCards.length - 1; i > 1; i--) {
-            var j = Math.floor(Math.random() * (i + 1));
-
-            var idA = selectedCards[i];
-            var idB = selectedCards[j];
-
-            swap($(`#${idA}`).parent(), $(`#${idB}`).parent());
-        }
-
-        deselectAll();
-        disableButton();
-    }
-
-    var swap = function (elementA, elementB) {
-        var parentA = elementA.parent();
-        var indexA = parentA.children().index(elementA);
-        
-        elementA.insertAfter(elementB);
-        
-        if (indexA == 0) {
-            elementB.insertBefore(parentA.children().get(0));
-        } else {
-            elementB.insertAfter(parentA.children().get(indexA - 1));
-        }
-    }
-
-    var turnDownCard = function (card) {
-        card.children(".game-card-text").text("?");
-    }
-
-    var highlightCard = function (card) {
-        card.toggleClass("bg-dark", false);
-        card.toggleClass("bg-primary", false);
-        card.toggleClass("bg-warning", true);
-        card.toggleClass("game-card-active", false);
-        card.toggleClass("game-card-win", true);
-    }
-
-    var enableButton = function () {
-        turnOverButton.toggleClass("disabled", false);
-        turnOverButton.removeAttr("disabled");
-        turnOverButton.click(buttonClicked);
-    }
-
-    var disableButton = function () {
-        turnOverButton.toggleClass("disabled", true);
-        turnOverButton.attr("disabled", "disabled");
-        turnOverButton.off("click");
-    }
-
-    var buttonClicked = function () {
-        if (turnedOver) {
-            turnDownAll();
-        } else {
-            turnUpAll();
-        }
-    }
-
-    var onWin = function () {
-        var body = $("<div></div>")
-            .addClass("card-body text-center")
-            .append($("<h3></h3>")
-                .addClass("card-title text-success text-center")
-                .text("You win!")
-            );
-
-        var card = $("<div></div>")
-            .addClass("card")
-            .append(body);
-
-        $('#win-alert').append(card);
-
-        disableButton();
-        $('#restart-button').toggleClass("btn-danger", false).toggleClass("btn-success", true);
-    }
-
-    $('#restart-button').click(function () {
-        setupGame();
-    });
-
-    turnOverButton.click(buttonClicked);
-
-    // Start
-    setupGame();
-});
-
 // Code adapted from https://www.geeksforgeeks.org/hopcroft-karp-algorithm-for-maximum-matching-set-2-implementation/, adapted 5/27/19, lines 14-161
 // BipGraph is abbreviation for Bipartite graph
 // Note: 1-based indices used for the vertices, be sure to convert in Play.xaml.cs!!!
@@ -284,7 +21,7 @@ class BipGraph {
     pairV;
     dist;
     // Constructor
-    BipGraph(m, n) {
+    constructor(m, n) {
         this.m = m;
         this.n = n;
         adj = new Array();
@@ -316,7 +53,7 @@ class BipGraph {
     }
     // Runs Hopcroft-Karp algorithm, returns pairU
     HopcroftKarp() {
-        pairU = new Array(m + 1);
+        var pairU = new Array(m + 1);
         pairV = new Array(n + 1);
         dist = new Array(m + 1);
         for (var u = 0; u < m + 1; u++) {
@@ -407,3 +144,373 @@ class BipGraph {
         }
     }
 }
+
+$('document').ready(function () {
+    // jQuery Objects
+    var settingsModal = $("#settingsModal");
+    var settingsOk = $("#settingsModalOk");
+    var turnOverButton = $("#turn-over-button");
+
+    // Variables
+    var cards;
+    var selectedCards;// Array of IDs of selected cards
+
+    var turnedOver;
+
+    var n;
+    var k;
+
+    var G;
+    
+    // Functions
+
+    var setupGame = function () {
+        cards = [];
+        selectedCards = [];
+        turnedOver = false;
+
+        // n must be even
+        n = 18;
+        k = 3;
+
+        G = new BipGraph(n, n);
+        for (var i = 1; i <= n; i++)
+        {
+            for (var j = 1; j <= n; j++)
+            {
+                console.log("(" + i + ", " + j + ")");
+                G.AddEdge(i, j);
+            }
+        }
+
+        $("#win-alert").empty();
+        $('#restart-button').toggleClass("btn-danger", true).toggleClass("btn-success", false);
+        disableButton();
+
+        createCardDeck();
+    }
+
+    var createCardDeck = function () {
+        var column = $("#card-grid-col");
+        var grid = $("#card-grid");
+        var body = $("#card-grid-body");
+        body.empty();
+
+        var rows = 3;
+        var cols = 6;
+
+        var width = column.width();
+        var spacing = grid.attr('cellspacing');
+        var padding = grid.attr('cellpadding');
+
+        var width = (width - (padding * 2 * cols) - (spacing * (cols - 1))) / cols;
+        var height = width * 3 / 2;
+
+        var indexes = [...Array(rows * cols).keys()];
+
+        shuffle(indexes);
+
+        var i = 0;
+
+        for (var r = 0; r < rows; r++) {
+            var row = $("<tr></tr>");
+
+            for (var c = 0; c < cols; c++) {
+                var card = createCard(indexes[i], width, height);
+
+                card.click(function () {
+                    cardClicked($(this));
+                });
+
+                cards.push(card);
+
+                row.append(
+                    $("<td></td>")
+                    .append(card)
+                );
+
+                i++;
+            }
+
+            body.append(row);
+        }
+    }
+
+    // Create a card (initial value upon creation is unknown but we set it to -1)
+    var createCard = function (n, width, height) {
+        var node = $("<div></div>")
+            .attr("id", `card-${n}`)
+            .attr("card-num", -1)
+            .addClass("game-card game-card-active bg-dark")
+            .attr("style", `width: ${width}px; height: ${height}px;`)
+            .append($("<h2></h2>")
+                .addClass("game-card-text text-light")
+                .text("?")
+            );
+        
+        return node;
+    }
+
+    // Redirects to selectCard() or deselectCard() based on whether it is selected already
+    var cardClicked = function (card) {
+        if (!turnedOver) {
+            if (selectedCards.indexOf(card.attr("id")) == -1) {
+                if (selectedCards.length < k) {
+                    selectCard(card);
+                }
+            } else {
+                deselectCard(card);
+            }
+        }
+    }
+
+    // Turn the card from deselected to selected
+    var selectCard = function (card) {
+        selectedCards.push(card.attr("id"));
+        
+        // Start 'Selected effects
+        card.toggleClass("bg-dark", false);
+        card.toggleClass("bg-primary", true);
+
+        if (selectedCards.length == k) {
+            enableButton();
+        }
+    }
+
+    // Turn the card from selected to deselected
+    var deselectCard = function (card) {
+        var index = selectedCards.indexOf(card.attr("id"));
+        selectedCards.splice(index, 1);
+
+        // Stop 'Selected' effects
+        card.toggleClass("bg-dark", true);
+        card.toggleClass("bg-primary", false);
+
+        if (selectedCards.length < k) {
+            disableButton();
+        }
+    }
+
+    // Deselect all cards
+    var deselectAll = function () {
+        while (selectedCards.length > 0) {
+            deselectCard($(`#${selectedCards[0]}`));
+        }
+    }
+
+    // will not use
+    /*
+    var turnUpAll = function () {
+        turnedOver = true;
+        var checkedIDs = [];
+        var win = false;
+
+        for (var i = 0; i < selectedCards.length; i++) {
+            var currentID = selectedCards[i];
+            var currentCard = $(`#${currentID}`);
+            var currentCardNum = currentCard.attr("card-num");
+
+            var equalCardID = checkedIDs.find((id) => {
+                return $(`#${id}`).attr("card-num") == currentCardNum;
+            });
+
+            if (equalCardID != undefined) {
+                win = true;
+                highlightCard(currentCard);
+                highlightCard($(`#${equalCardID}`));
+            }
+
+            checkedIDs.push(currentID);
+            turnUpCard(currentCard);
+        }
+
+        if (win) {
+            onWin();
+        }
+    }
+    */
+
+    var turnUpAll = function () {
+        // This is the temporary bipartite graph, connecting the chosen cards to the possible values they can be
+        // We ignore the cards which were not chosen, so they will not have connections and will not affect the algorithm
+        GTemp = new BipGraph(n, n / 2);
+        for (var i = 0; i < selectedCards.length; i++) {
+            var index = selectedCards[i];
+            // For each vertex adjacent to i in G, add a connection in GTemp
+            for (var j in G.adj[index + 1]) {
+                GTemp.AddEdge(index + 1, (j - 1) % (n/2) + 1);
+            }
+        }
+        var adjChosen = GTemp.HopcroftKarp();
+        // Check if all chosen cards can have a unique value.
+        // If they can, we are basically done. Otherwise, we need to do another Hopcroft Karp, this time where duplicate values are allowed
+        var valid = true;
+        for (var i = 0; i < selectedCards.length; i++) {
+            var index = selectedCards[i];
+            // Adding 1 for 1-based indices
+            if (adjChosen[index + 1] == 0) {
+                valid = false;
+                break;
+            }
+        }
+        if (valid) {
+            // Set and store the values chosen to the cards
+            var values = new Set();
+            for (var i = 0; i < selectedCards.length; i++) {
+                var index = selectedCards[i];
+                if (G.hasEdge(index + 1, adjChosen[index + 1])) {
+                    values.add(adjChosen[index + 1]);
+                } else {
+                    values.add(adjChosen[index + 1] + (n/2));
+                }
+                // Now set the value of the card
+                $(`#${index}`).attr("card-num") = (adjChosen[index + 1].ToString());
+            }
+            for (var i = 0; i < selectedCards.length; i++) {
+                var index = selectedCards[i];
+                G.ClearVertex(i + 1);
+                for(var j of values) {
+                    G.AddEdge(i + 1, j);
+                }
+            }
+            // We cannot let non-chosen cards take on the value of a chosen card
+            for (var i = 0; i < n; i++)
+            {
+                if (!selectedCards.includes(i)) {
+                    for(var j of values)
+                    {
+                        G.ClearEdge(i + 1, j);
+                    }
+                }
+            }
+            return;
+        }
+        // If we are here, we know that it wasn't valid, so we know that we lost
+        // We decide the values of the cards using Hopcroft-Karp again on the graph counting duplicates
+        // Using a different BipGraph because the number of possible values of cards is now different
+        var GTemp2 = new BipGraph(n, n);
+        for (var i = 0; i < selectedCards.length; i++) {
+            var index = selectedCards[i];
+            // For each vertex adjacent to index in G, add a connection in GTemp
+            for(var adj of G.adj[index + 1]) {
+                GTemp2.AddEdge(index + 1, adj);
+            }
+        }
+        var adjChosen2 = GTemp2.HopcroftKarp();
+        // We know the user won, so we don't have to shuffle cards anymore
+        for (var i = 0; i < selectedCards.length; i++) {
+            var index = selectedCards[i];
+            $(`#${index}`).attr("card-num") = ((adjChosen2[index + 1] - 1) % (n/2) + 1);
+        }
+        onwin();
+    }
+
+    // Turn up the card
+    var turnUpCard = function (card) {
+        card.children(".game-card-text").text(card.attr("card-num"));
+    }
+
+    // Turn over all cards and shuffle them in place
+    var turnDownAll = function () {
+        turnedOver = false;
+
+        for (var i = 0; i < selectedCards.length; i++) {
+            var card = $(`#${selectedCards[i]}`);
+            turnDownCard(card);
+        }
+
+        // Shuffle cards
+//        for (var i = selectedCards.length - 1; i > 1; i--) {
+//            var j = Math.floor(Math.random() * (i + 1));
+//
+//            var idA = selectedCards[i];
+//            var idB = selectedCards[j];
+//
+//            swap($(`#${idA}`).parent(), $(`#${idB}`).parent());
+//        }
+
+        deselectAll();
+        disableButton();
+    }
+
+    // Will not use
+    var swap = function (elementA, elementB) {
+        var parentA = elementA.parent();
+        var indexA = parentA.children().index(elementA);
+        
+        elementA.insertAfter(elementB);
+        
+        if (indexA == 0) {
+            elementB.insertBefore(parentA.children().get(0));
+        } else {
+            elementB.insertAfter(parentA.children().get(indexA - 1));
+        }
+    }
+
+    // Turn over the card
+    var turnDownCard = function (card) {
+        card.children(".game-card-text").text("?");
+    }
+
+    // Highlight the two cards with the same number which were selected in event of win
+    var highlightCard = function (card) {
+        card.toggleClass("bg-dark", false);
+        card.toggleClass("bg-primary", false);
+        card.toggleClass("bg-warning", true);
+        card.toggleClass("game-card-active", false);
+        card.toggleClass("game-card-win", true);
+    }
+
+    // Enable the button, allowing the user to turn over when k cards have been selected
+    var enableButton = function () {
+        turnOverButton.toggleClass("disabled", false);
+        turnOverButton.removeAttr("disabled");
+        turnOverButton.click(buttonClicked);
+    }
+
+    // Disable the button if the user should not be allowed to click it
+    var disableButton = function () {
+        turnOverButton.toggleClass("disabled", true);
+        turnOverButton.attr("disabled", "disabled");
+        turnOverButton.off("click");
+    }
+
+    // Toggle selected cards when button is clicked
+    var buttonClicked = function () {
+        if (turnedOver) {
+            turnDownAll();
+        } else {
+            turnUpAll();
+        }
+    }
+
+    // When the user wins, run the onWin sequence
+    var onWin = function () {
+        var body = $("<div></div>")
+            .addClass("card-body text-center")
+            .append($("<h3></h3>")
+                .addClass("card-title text-success text-center")
+                .text("You win!")
+            );
+
+        var card = $("<div></div>")
+            .addClass("card")
+            .append(body);
+
+        $('#win-alert').append(card);
+
+        disableButton();
+        $('#restart-button').toggleClass("btn-danger", false).toggleClass("btn-success", true);
+    }
+
+    // Restart when restart button is clicked
+    $('#restart-button').click(function () {
+        setupGame();
+    });
+
+    turnOverButton.click(buttonClicked);
+
+    // Start
+    setupGame();
+});
+
