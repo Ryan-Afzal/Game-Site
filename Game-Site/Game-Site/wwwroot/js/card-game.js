@@ -58,7 +58,10 @@ class BipGraph {
             this.pairV[v] = 0;
         }
         var result = 0;
+        var counter = 0;
         while (this.HasAugmentingPath()) {
+            counter++;
+            console.log("ITERATION: " + counter);
             // Shuffle the order in which the cards are chosen for dfs, to randomize the cards
             var order = Array();
             for (var i = 1; i <= this.m; i++) {
@@ -95,11 +98,11 @@ class BipGraph {
             // Dequeue a vertex
             var u = queue.shift();
             if (this.dist[u] < this.dist[0]) {
-                for (var i = 0; i < this.adj[u].length; i++) {
+                for (var i of this.adj[u]) {
                     // If the pair of i is not considered then the distance to pairV[i] is infinite, and (i, pairV[i]) is not an explored edge
-                    if (this.dist[this.pairV[this.adj[i]]] == Number.MAX_VALUE) {
-                        this.dist[this.pairV[this.adj[i]]] = this.dist[u] + 1;
-                        queue.push(this.pairV[this.adj[i]]);
+                    if (this.dist[this.pairV[i]] == Number.MAX_VALUE) {
+                        this.dist[this.pairV[i]] = this.dist[u] + 1;
+                        queue.push(this.pairV[i]);
                     }
                 }
             }
@@ -112,11 +115,11 @@ class BipGraph {
         if (u != 0) {
             // To randomize order adjacent vertices get visited in
             this.Shuffle(this.adj[u]);
-            for (var i = 0; i < this.adj[u].length; i++) {
-                if (this.dist[this.pairV[this.adj[i]]] == this.dist[u] + 1) {
-                    if (this.dfs(this.pairV[this.adj[i]])) {
-                        this.pairV[this.adj[i]] = u;
-                        this.pairU[u] = this.adj[i];
+            for (var i of this.adj[u]) {
+                if (this.dist[this.pairV[i]] == this.dist[u] + 1) {
+                    if (this.dfs(this.pairV[i])) {
+                        this.pairV[i] = u;
+                        this.pairU[u] = i;
                         return true;
                     }
                 }
@@ -189,7 +192,7 @@ $('document').ready(function () {
         var grid = $("#card-grid");
         var body = $("#card-grid-body");
         body.empty();
-
+        
         var rows = 3;
         var cols = 6;
 
@@ -233,8 +236,8 @@ $('document').ready(function () {
     // Create a card (initial value upon creation is unknown but we set it to -1)
     var createCard = function (n, width, height) {
         var node = $("<div></div>")
-            .attr("id", `card-${n}`)
-            .attr("card-num", -1)
+            .attr("id", `${n}`)
+            .attr("card-num", -36)
             .addClass("game-card game-card-active bg-dark")
             .attr("style", `width: ${width}px; height: ${height}px;`)
             .append($("<h2></h2>")
@@ -325,22 +328,26 @@ $('document').ready(function () {
     */
 
     var turnUpAll = function () {
+        turnedOver = true;
         // This is the temporary bipartite graph, connecting the chosen cards to the possible values they can be
         // We ignore the cards which were not chosen, so they will not have connections and will not affect the algorithm
         var GTemp = new BipGraph(n, n / 2);
         for (var i = 0; i < selectedCards.length; i++) {
-            var index = selectedCards[i];
+            var index = parseInt(selectedCards[i]);
             // For each vertex adjacent to i in G, add a connection in GTemp
-            for (var j in G.adj[index + 1]) {
+            for (var j of G.adj[index + 1]) {
                 GTemp.AddEdge(index + 1, (j - 1) % (n/2) + 1);
             }
+            
         }
         var adjChosen = GTemp.HopcroftKarp();
+        console.log(adjChosen.toString());
+        console.log("HIHI");
         // Check if all chosen cards can have a unique value.
         // If they can, we are basically done. Otherwise, we need to do another Hopcroft Karp, this time where duplicate values are allowed
         var valid = true;
         for (var i = 0; i < selectedCards.length; i++) {
-            var index = selectedCards[i];
+            var index = parseInt(selectedCards[i]);
             // Adding 1 for 1-based indices
             if (adjChosen[index + 1] == 0) {
                 valid = false;
@@ -351,17 +358,19 @@ $('document').ready(function () {
             // Set and store the values chosen to the cards
             var values = new Set();
             for (var i = 0; i < selectedCards.length; i++) {
-                var index = selectedCards[i];
+                var index = parseInt(selectedCards[i]);
+
                 if (G.hasEdge(index + 1, adjChosen[index + 1])) {
                     values.add(adjChosen[index + 1]);
                 } else {
                     values.add(adjChosen[index + 1] + (n/2));
                 }
                 // Now set the value of the card
-                $(`#${index}`).attr("card-num") = (adjChosen[index + 1].ToString());
+                var id = index.toString();
+                $(`#${id}`).attr("card-num", adjChosen[index + 1].toString());
             }
             for (var i = 0; i < selectedCards.length; i++) {
-                var index = selectedCards[i];
+                var index = parseInt(selectedCards[i]);
                 G.ClearVertex(i + 1);
                 for(var j of values) {
                     G.AddEdge(i + 1, j);
@@ -370,21 +379,26 @@ $('document').ready(function () {
             // We cannot let non-chosen cards take on the value of a chosen card
             for (var i = 0; i < n; i++)
             {
-                if (!selectedCards.includes(i)) {
+                if (!isSelected(i)) {
                     for(var j of values)
                     {
                         G.ClearEdge(i + 1, j);
                     }
                 }
             }
+            for (var i = 0; i < selectedCards.length; i++) {
+                var currentCard = $(`#${selectedCards[i]}`);
+                turnUpCard(currentCard);
+            }
             return;
         }
+        console.log("win");
         // If we are here, we know that it wasn't valid, so we know that we lost
         // We decide the values of the cards using Hopcroft-Karp again on the graph counting duplicates
         // Using a different BipGraph because the number of possible values of cards is now different
         var GTemp2 = new BipGraph(n, n);
         for (var i = 0; i < selectedCards.length; i++) {
-            var index = selectedCards[i];
+            var index = parseInt(selectedCards[i]);
             // For each vertex adjacent to index in G, add a connection in GTemp
             for(var adj of G.adj[index + 1]) {
                 GTemp2.AddEdge(index + 1, adj);
@@ -393,10 +407,24 @@ $('document').ready(function () {
         var adjChosen2 = GTemp2.HopcroftKarp();
         // We know the user won, so we don't have to shuffle cards anymore
         for (var i = 0; i < selectedCards.length; i++) {
-            var index = selectedCards[i];
-            $(`#${index}`).attr("card-num") = ((adjChosen2[index + 1] - 1) % (n/2) + 1);
+            var index = parseInt(selectedCards[i]);
+            var id = index.toString();
+            $(`#${id}`).attr("card-num", (((adjChosen2[index + 1] - 1) % (n/2)) + 1));
+        }
+        for (var i = 0; i < selectedCards.length; i++) {
+            var currentCard = $(`#${selectedCards[i]}`);
+            turnUpCard(currentCard);
         }
         onWin();
+    }
+
+    var isSelected = function (val) {
+        for (var card of selectedCards) {
+            if (parseInt(card) == val) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Turn up the card
