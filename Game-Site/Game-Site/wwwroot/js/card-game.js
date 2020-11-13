@@ -4,17 +4,14 @@
 // BipGraph is abbreviation for Bipartite graph
 // Note: 1-based indices used for the vertices, be sure to convert in Play.xaml.cs!!!
 class BipGraph {
-    // Number of vertices on the left side of the graph
-//    m;
-    // Number of vertices on the right side of the graph
-//    n;
-    // adj[u] is the list of vertices adjacent to u, including 0, the dummy vertex
-//    adj;
-    // pairU[u] is the vertex on the right side of the graph, connected to u on the left side
-//    pairU;
-    // pairV[v] is the vertex on the left side of the graph, connected to v on the right side
-//    pairV;
-//    dist;
+    /*
+    m:  Number of vertices on the left side of the graph
+    n: Number of vertices on the right side of the graph
+    adj: adj[u] is the list of vertices adjacent to u, including 0, the dummy vertex
+    pairU: pairU[u] is the vertex on the right side of the graph, connected to u on the left side
+    pairV: pairV[v] is the vertex on the left side of the graph, connected to v on the right side
+    */
+
     // Constructor
     constructor(m, n) {
         this.m = m;
@@ -58,10 +55,7 @@ class BipGraph {
             this.pairV[v] = 0;
         }
         var result = 0;
-        var counter = 0;
         while (this.HasAugmentingPath()) {
-            counter++;
-            console.log("ITERATION: " + counter);
             // Shuffle the order in which the cards are chosen for dfs, to randomize the cards
             var order = Array();
             for (var i = 1; i <= this.m; i++) {
@@ -140,6 +134,14 @@ class BipGraph {
             list[k] = list[n];
             list[n] = value;
         }
+    }
+    // Print tool for debugging
+    toString() {
+        var str = "";
+        for (var i = 0; i <= this.m; i++) {
+            str += (i + ": " + (this.adj[i]).toString() + "\n");
+        }
+        return str;
     }
 }
 
@@ -295,39 +297,8 @@ $('document').ready(function () {
         }
     }
 
-    // will not use
-    /*
     var turnUpAll = function () {
-        turnedOver = true;
-        var checkedIDs = [];
-        var win = false;
 
-        for (var i = 0; i < selectedCards.length; i++) {
-            var currentID = selectedCards[i];
-            var currentCard = $(`#${currentID}`);
-            var currentCardNum = currentCard.attr("card-num");
-
-            var equalCardID = checkedIDs.find((id) => {
-                return $(`#${id}`).attr("card-num") == currentCardNum;
-            });
-
-            if (equalCardID != undefined) {
-                win = true;
-                highlightCard(currentCard);
-                highlightCard($(`#${equalCardID}`));
-            }
-
-            checkedIDs.push(currentID);
-            turnUpCard(currentCard);
-        }
-
-        if (win) {
-            onWin();
-        }
-    }
-    */
-
-    var turnUpAll = function () {
         turnedOver = true;
         // This is the temporary bipartite graph, connecting the chosen cards to the possible values they can be
         // We ignore the cards which were not chosen, so they will not have connections and will not affect the algorithm
@@ -341,8 +312,6 @@ $('document').ready(function () {
             
         }
         var adjChosen = GTemp.HopcroftKarp();
-        console.log(adjChosen.toString());
-        console.log("HIHI");
         // Check if all chosen cards can have a unique value.
         // If they can, we are basically done. Otherwise, we need to do another Hopcroft Karp, this time where duplicate values are allowed
         var valid = true;
@@ -371,9 +340,9 @@ $('document').ready(function () {
             }
             for (var i = 0; i < selectedCards.length; i++) {
                 var index = parseInt(selectedCards[i]);
-                G.ClearVertex(i + 1);
+                G.ClearVertex(index + 1);
                 for(var j of values) {
-                    G.AddEdge(i + 1, j);
+                    G.AddEdge(index + 1, j);
                 }
             }
             // We cannot let non-chosen cards take on the value of a chosen card
@@ -392,7 +361,6 @@ $('document').ready(function () {
             }
             return;
         }
-        console.log("win");
         // If we are here, we know that it wasn't valid, so we know that we lost
         // We decide the values of the cards using Hopcroft-Karp again on the graph counting duplicates
         // Using a different BipGraph because the number of possible values of cards is now different
@@ -453,20 +421,6 @@ $('document').ready(function () {
 
         deselectAll();
         disableButton();
-    }
-
-    // Will not use
-    var swap = function (elementA, elementB) {
-        var parentA = elementA.parent();
-        var indexA = parentA.children().index(elementA);
-        
-        elementA.insertAfter(elementB);
-        
-        if (indexA == 0) {
-            elementB.insertBefore(parentA.children().get(0));
-        } else {
-            elementB.insertAfter(parentA.children().get(indexA - 1));
-        }
     }
 
     // Turn over the card
