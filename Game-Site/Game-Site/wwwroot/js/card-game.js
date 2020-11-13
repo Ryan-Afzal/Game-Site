@@ -1,83 +1,78 @@
 ﻿"use strict;"
 
-// Shuffle the array
-function shuffle(array) {
-    array.sort(() => Math.random() - 0.5);
-}
-
 // Code adapted from https://www.geeksforgeeks.org/hopcroft-karp-algorithm-for-maximum-matching-set-2-implementation/, adapted 5/27/19, lines 14-161
 // BipGraph is abbreviation for Bipartite graph
 // Note: 1-based indices used for the vertices, be sure to convert in Play.xaml.cs!!!
 class BipGraph {
     // Number of vertices on the left side of the graph
-    m;
+//    m;
     // Number of vertices on the right side of the graph
-    n;
+//    n;
     // adj[u] is the list of vertices adjacent to u, including 0, the dummy vertex
-    adj;
+//    adj;
     // pairU[u] is the vertex on the right side of the graph, connected to u on the left side
-    pairU;
+//    pairU;
     // pairV[v] is the vertex on the left side of the graph, connected to v on the right side
-    pairV;
-    dist;
+//    pairV;
+//    dist;
     // Constructor
     constructor(m, n) {
         this.m = m;
         this.n = n;
-        adj = new Array();
+        this.adj = new Array();
         for (var i = 0; i <= m; i++) {
-            adj.push(new Array());
+            this.adj.push(new Array());
         }
     }
     // Add an edge from u to v and v to u, avoiding duplicates
     AddEdge(u, v) {
-        if (!adj[u].includes(v)) {
-            adj[u].push(v);
+        if (!this.adj[u].includes(v)) {
+            this.adj[u].push(v);
         }
     }
     // Clear vertex u's edges
     ClearVertex(u) {
-        adj[u] = new Array();
+        this.adj[u] = new Array();
     }
     // Clear vertex v's edges where v is on the right
     // This is used because once a card is selected to be a certain number, other cards cannot also be that number
     ClearEdge(u, v) {
-        if (adj[u].includes(v)) {
-            adj[u].splice(adj[u].indexOf(v), 1);
+        if (this.adj[u].includes(v)) {
+            this.adj[u].splice(this.adj[u].indexOf(v), 1);
         }
     }
 
     // Checks to see if the two vertices are connected by a pair of edges
     hasEdge(u, v) {
-        return adj[u].includes(v);
+        return this.adj[u].includes(v);
     }
     // Runs Hopcroft-Karp algorithm, returns pairU
     HopcroftKarp() {
-        var pairU = new Array(m + 1);
-        pairV = new Array(n + 1);
-        dist = new Array(m + 1);
-        for (var u = 0; u < m + 1; u++) {
-            pairU[u] = 0;
+        this.pairU = new Array(this.m + 1);
+        this.pairV = new Array(this.n + 1);
+        this.dist = new Array(this.m + 1);
+        for (var u = 0; u < this.m + 1; u++) {
+            this.pairU[u] = 0;
         }
-        for (var v = 0; v < n + 1; v++) {
-            pairV[v] = 0;
+        for (var v = 0; v < this.n + 1; v++) {
+            this.pairV[v] = 0;
         }
         var result = 0;
-        while (HasAugmentingPath()) {
+        while (this.HasAugmentingPath()) {
             // Shuffle the order in which the cards are chosen for dfs, to randomize the cards
             var order = Array();
-            for (var i = 1; i <= m; i++) {
+            for (var i = 1; i <= this.m; i++) {
                 order.push(i);
             }
-            Shuffle(order);
-            for (var u = 0; u < m; u++) {
+            this.Shuffle(order);
+            for (var u = 0; u < this.m; u++) {
                 // Finding an augmenting path starting from u on the left side of the graph
-                if (pairU[order[u]] == 0 && dfs(order[u])) {
+                if (this.pairU[order[u]] == 0 && this.dfs(order[u])) {
                     result++;
                 }
             }
         }
-        return pairU;
+        return this.pairU;
     }
     // Returns true if there is an augmenting path (alternating path starting and ending with free vertex), false otherwise
     HasAugmentingPath() {
@@ -85,48 +80,48 @@ class BipGraph {
 
         var queue = new Array();
         // First layer of vertices
-        for (var u = 1; u <= m; u++) {
+        for (var u = 1; u <= this.m; u++) {
             // If it's a free vertex, add it to the queue
-            if (pairU[u] == 0) {
-                dist[u] = 0;
+            if (this.pairU[u] == 0) {
+                this.dist[u] = 0;
                 queue.push(u);
             } else {
-                dist[u] = Number.MAX_VALUE;
+                this.dist[u] = Number.MAX_VALUE;
             }
         }
-        dist[0] = Number.MAX_VALUE;
+        this.dist[0] = Number.MAX_VALUE;
         // queue contains vertices from the left side only
         while (queue.length != 0) {
             // Dequeue a vertex
             var u = queue.shift();
-            if (dist[u] < dist[0]) {
-                for (var i = 0; i < adj[u].length; i++) {
+            if (this.dist[u] < this.dist[0]) {
+                for (var i = 0; i < this.adj[u].length; i++) {
                     // If the pair of i is not considered then the distance to pairV[i] is infinite, and (i, pairV[i]) is not an explored edge
-                    if (dist[pairV[adj[i]]] == Number.MAX_VALUE) {
-                        dist[pairV[adj[i]]] = dist[u] + 1;
-                        queue.push(pairV[adj[i]]);
+                    if (this.dist[this.pairV[this.adj[i]]] == Number.MAX_VALUE) {
+                        this.dist[this.pairV[this.adj[i]]] = this.dist[u] + 1;
+                        queue.push(this.pairV[this.adj[i]]);
                     }
                 }
             }
         }
-        var isMaxValue = (dist[0] !== Number.MAX_VALUE);
+        var isMaxValue = (this.dist[0] !== Number.MAX_VALUE);
         return isMaxValue;
     }
     // Returns true if there exists an augmenting path beginning with free vertex u
     dfs(u) {
         if (u != 0) {
             // To randomize order adjacent vertices get visited in
-            Shuffle(adj[u]);
-            for (var i = 0; i < adj[u].length; i++) {
-                if (dist[pairV[adj[i]]] == dist[u] + 1) {
-                    if (dfs(pairV[adj[i]])) {
-                        pairV[adj[i]] = u;
-                        pairU[u] = adj[i];
+            this.Shuffle(this.adj[u]);
+            for (var i = 0; i < this.adj[u].length; i++) {
+                if (this.dist[this.pairV[this.adj[i]]] == this.dist[u] + 1) {
+                    if (this.dfs(this.pairV[this.adj[i]])) {
+                        this.pairV[this.adj[i]] = u;
+                        this.pairU[u] = this.adj[i];
                         return true;
                     }
                 }
             }
-            dist[u] = Number.MAX_VALUE;
+            this.dist[u] = Number.MAX_VALUE;
             return false;
         }
         return true;
@@ -178,7 +173,6 @@ $('document').ready(function () {
         {
             for (var j = 1; j <= n; j++)
             {
-                console.log("(" + i + ", " + j + ")");
                 G.AddEdge(i, j);
             }
         }
@@ -208,7 +202,7 @@ $('document').ready(function () {
 
         var indexes = [...Array(rows * cols).keys()];
 
-        shuffle(indexes);
+        // shuffle(indexes);
 
         var i = 0;
 
@@ -333,7 +327,7 @@ $('document').ready(function () {
     var turnUpAll = function () {
         // This is the temporary bipartite graph, connecting the chosen cards to the possible values they can be
         // We ignore the cards which were not chosen, so they will not have connections and will not affect the algorithm
-        GTemp = new BipGraph(n, n / 2);
+        var GTemp = new BipGraph(n, n / 2);
         for (var i = 0; i < selectedCards.length; i++) {
             var index = selectedCards[i];
             // For each vertex adjacent to i in G, add a connection in GTemp
@@ -402,7 +396,7 @@ $('document').ready(function () {
             var index = selectedCards[i];
             $(`#${index}`).attr("card-num") = ((adjChosen2[index + 1] - 1) % (n/2) + 1);
         }
-        onwin();
+        onWin();
     }
 
     // Turn up the card
