@@ -5,18 +5,26 @@
 }
 
 <!-- Settings Modal -->
-<div class="modal fade hide" id="settingsModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
+<div class="modal fade hide" id="instructionsModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="instructionsModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                <h5 class="modal-title" id="instructionsModalLabel">Instructions</h5>
             </div>
             <div class="modal-body">
-                <p class="modal-content text-danger">Put settings here:</p>
+                <h6>How to play</h6>
+                <ul>
+                    <li>There are 18 cards shuffled randomly. There are two cards of each number from 1 to 9. </li>
+                    <li>Click a card to select it or unselect it.</li>
+                    <li>Once you have chosen three of the cards, click the button to see their values.</li>
+                    <li>Then, turn over the cards and they will be shuffled amongst each other.</li>
+                    <li>Your goal is to select two cards of the same value. </li>
+                    <li>Beware: the computer will give you the worst possible deck of cards!</li>
+                </ul>
             </div>
             <div class="modal-footer">
-                <button type="button" id="settingsModalOk" class="btn btn-primary text-light" data-dismiss="modal">Ok</button>
-                <button type="button" id="settingsModalCancel" class="btn btn-dark text-light" data-dismiss="modal">Cancel</button>
+                <button type="button" id="instructionsModalOk" class="btn btn-primary text-light" data-dismiss="modal">Ok</button>
+                <button type="button" id="instructionsModalCancel" class="btn btn-dark text-light" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>

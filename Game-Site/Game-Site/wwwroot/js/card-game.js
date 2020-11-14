@@ -488,5 +488,6 @@ $('document').ready(function () {
 
     // Start
     setupGame();
+    $('#instructionsModal').modal('show');
 });
 
