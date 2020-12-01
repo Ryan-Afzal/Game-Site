@@ -71,6 +71,7 @@ $(function () {
                         printMessage("", "\"REF\": Simplifies to REF form and shows work.");
                         printMessage("", "\"RREF\": Simplifies to RREF form and shows work.");
                         printMessage("", "\"DET\": Prints out the determinant.");
+                        printMessage("", "\"MULT\": Multiply with a vector. Arguments should be the entries of the vector separated by a single space. ");
                         printMessage("", "\"Q\": End the program.");
                     }
                     else if (inputArr[0] === "S") {
@@ -175,6 +176,17 @@ $(function () {
                         else {
                             printMessage("", "Error: Determinant of non-square matrix is undefined.");
                         }
+                    }
+                    else if (inputArr[0] === "MULT") {
+                        var vector = new Vector(matrix.N);
+                        for (var i = 0; i < matrix.N; i++) {
+                            var curInput = inputArr[i + 1];
+                            var curVal = parseInt(curInput);
+                            vector.setValue(curVal, i);
+                        }
+                        printMessage("", matrix.toString() + "* <br/>" + vector.toString() + "= ");
+                        var result = Numbers.multiply(matrix, vector);
+                        printMessage("", result.toString());
                     }
                     else if (inputArr[0] === "Q") {
                         quitNow = true;
@@ -291,6 +303,20 @@ var Numbers = /** @class */ (function () {
         }
         digits++;
         return digits;
+    };
+    Numbers.multiply = function (matrix, vector) {
+        if (vector.N != matrix.N) {
+            throw new Error("Vector is not correct size");
+        }
+        var result = new Vector(matrix.M);
+        for (var i = 0; i < matrix.M; i++) {
+            var temp = 0;
+            for (var j = 0; j < matrix.N; j++) {
+                temp += matrix.vals[i][j] * vector.vals[j];
+            }
+            result.setValue(temp, i);
+        }
+        return result;
     };
     return Numbers;
 }());
@@ -619,4 +645,22 @@ var SquareMatrix = /** @class */ (function (_super) {
     };
     return SquareMatrix;
 }(Matrix));
+var Vector = /** @class */ (function () {
+    function Vector(N) {
+        // N is number of rows
+        this.N = N;
+        this.vals = new Array(N);
+    }
+    Vector.prototype.setValue = function (val, i) {
+        this.vals[i] = val;
+    };
+    Vector.prototype.toString = function () {
+        var str = "";
+        for (var i = 0; i < this.N; i++) {
+            str += (this.vals[i] + "<br/>");
+        }
+        return str;
+    };
+    return Vector;
+}());
 //# sourceMappingURL=linalg.js.map

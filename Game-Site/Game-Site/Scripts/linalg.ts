@@ -59,6 +59,7 @@ $(() => {
                         printMessage("", "\"REF\": Simplifies to REF form and shows work.");
                         printMessage("", "\"RREF\": Simplifies to RREF form and shows work.");
                         printMessage("", "\"DET\": Prints out the determinant.");
+                        printMessage("", "\"MULT\": Multiply with a vector. Arguments should be the entries of the vector separated by a single space. ");
                         printMessage("", "\"Q\": End the program.");
                     } else if (inputArr[0] === "S") {
                         if (inputArr.length < 3) {
@@ -154,6 +155,17 @@ $(() => {
                         } else {
                             printMessage("", "Error: Determinant of non-square matrix is undefined.");
                         }
+                    } else if (inputArr[0] === "MULT") {
+                        let vector: Vector = new Vector(matrix.N);
+                        for (let i = 0; i < matrix.N; i++) {
+
+                            let curInput: string = inputArr[i+1];
+                            let curVal = parseInt(curInput);
+                            vector.setValue(curVal, i);
+                        }
+                        printMessage("", matrix.toString() + "* <br/>" + vector.toString() + "= ");
+                        let result: Vector = Numbers.multiply(matrix, vector);
+                        printMessage("", result.toString());
                     } else if (inputArr[0] === "Q") {
                         quitNow = true;
                     } else {
@@ -271,6 +283,20 @@ class Numbers {
         }
         digits++;
         return digits;
+    }
+    static multiply(matrix: Matrix, vector: Vector): Vector {
+        if (vector.N != matrix.N) {
+            throw new Error("Vector is not correct size");
+        }
+        let result: Vector = new Vector(matrix.M);
+        for (let i = 0; i < matrix.M; i++) {
+            let temp: number = 0;
+            for (let j = 0; j < matrix.N; j++) {
+                temp += matrix.vals[i][j] * vector.vals[j];
+            }
+            result.setValue(temp, i);
+        }
+        return result;
     }
 }
 class Fraction {
@@ -605,4 +631,23 @@ class SquareMatrix extends Matrix {
         return copy.toREF(false)[0];
     }
 
+}
+class Vector {
+    N: number;
+    vals: number[];
+    constructor(N: number) {
+        // N is number of rows
+        this.N = N;
+        this.vals = new Array(N);
+    }
+    public setValue(val: number, i: number) {
+        this.vals[i] = val;
+    }
+    public toString(): string {
+        let str: string = "";
+        for (let i = 0; i < this.N; i++) {
+            str += (this.vals[i] + "<br/>");
+        }
+        return str;
+    }
 }
