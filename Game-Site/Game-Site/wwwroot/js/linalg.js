@@ -188,6 +188,17 @@ $(function () {
                         var result = Numbers.multiply(matrix, vector);
                         printMessage("", result.toString());
                     }
+                    else if (inputArr[0] === "O") {
+                        var newMatrix = matrix.copy();
+                        for (var i = 0; i < newMatrix.M; i++) {
+                            newMatrix.descale(i);
+                            for (var j = 0; j < i; j++) {
+                                // We want to turn R_i into the projection of R_i onto R_j
+                                newMatrix.project(i, j);
+                            }
+                        }
+                        printMessage("", newMatrix.toString());
+                    }
                     else if (inputArr[0] === "Q") {
                         quitNow = true;
                     }
@@ -623,6 +634,28 @@ var Matrix = /** @class */ (function () {
         }
         return str;
     };
+    // Turns Row_i into the projection of Row_i onto Row_j, should usually only be used when i > j
+    Matrix.prototype.project = function (i, j) {
+        var vi = this.getRow(i);
+        var vj = this.getRow(j);
+        var v = Vector.add(Vector.mult(vi, Vector.dot(vj, vj)), Vector.mult(vj, -Vector.dot(vi, vj)));
+        this.setRow(v, i);
+        this.descale(i);
+    };
+    // Set a row of the matrix to the vector
+    Matrix.prototype.setRow = function (v, i) {
+        for (var j = 0; j < this.N; j++) {
+            this.setValue(v.vals[j], i, j);
+        }
+    };
+    // Turns a row of the matrix to the vector
+    Matrix.prototype.getRow = function (i) {
+        var res = new Vector(this.N);
+        for (var j = 0; j < this.N; j++) {
+            res.setValue(this.vals[i][j], j);
+        }
+        return res;
+    };
     Matrix.prototype.copy = function () {
         var ret = new Matrix(this.M, this.N);
         for (var i = 0; i < this.M; i++) {
@@ -660,6 +693,30 @@ var Vector = /** @class */ (function () {
             str += (this.vals[i] + "<br/>");
         }
         return str;
+    };
+    // Takes dot product of two integer vectors
+    Vector.dot = function (v1, v2) {
+        var res = 0;
+        for (var i = 0; i < v1.N; i++) {
+            res += v1.vals[i] * v2.vals[i];
+        }
+        return res;
+    };
+    // Adds two integer vectors
+    Vector.add = function (v1, v2) {
+        var res = new Vector(v1.N);
+        for (var i = 0; i < v1.N; i++) {
+            res.setValue(v1.vals[i] + v2.vals[i], i);
+        }
+        return res;
+    };
+    // Multiply an integer vector by a constant
+    Vector.mult = function (v, sc) {
+        var res = new Vector(v.N);
+        for (var i = 0; i < v.N; i++) {
+            res.setValue(v.vals[i] * sc, i);
+        }
+        return res;
     };
     return Vector;
 }());

@@ -60,6 +60,7 @@ $(() => {
                         printMessage("", "\"RREF\": Simplifies to RREF form and shows work.");
                         printMessage("", "\"DET\": Prints out the determinant.");
                         printMessage("", "\"MULT\": Multiply with a vector. Arguments should be the entries of the vector separated by a single space. ");
+                        printMessage("", "\"O\": Find an orthogonal basis of the rows of the matrix. The matrix itself is not affected. ");
                         printMessage("", "\"Q\": End the program.");
                     } else if (inputArr[0] === "S") {
                         if (inputArr.length < 3) {
@@ -166,6 +167,16 @@ $(() => {
                         printMessage("", matrix.toString() + "* <br/>" + vector.toString() + "= ");
                         let result: Vector = Numbers.multiply(matrix, vector);
                         printMessage("", result.toString());
+                    } else if (inputArr[0] === "O") {
+                        let newMatrix: Matrix = matrix.copy();
+                        for (let i = 0; i < newMatrix.M; i++) {
+                            newMatrix.descale(i);
+                            for (let j = 0; j < i; j++) {
+                                // We want to turn R_i into the projection of R_i onto R_j
+                                newMatrix.project(i, j);
+                            }
+                        }
+                        printMessage("", newMatrix.toString())
                     } else if (inputArr[0] === "Q") {
                         quitNow = true;
                     } else {
@@ -610,6 +621,30 @@ class Matrix {
         }
         return str;
     }
+    // Turns Row_i into the projection of Row_i onto Row_j, should usually only be used when i > j
+    public project(i: number, j: number) {
+        let vi: Vector = this.getRow(i);
+        let vj: Vector = this.getRow(j);
+        let v: Vector = Vector.add(Vector.mult(vi, Vector.dot(vj, vj)), Vector.mult(vj, -Vector.dot(vi, vj)));
+        this.setRow(v, i);
+        this.descale(i);
+    }
+
+    // Set a row of the matrix to the vector
+    public setRow(v: Vector, i: number) {
+        for (let j = 0; j < this.N; j++) {
+            this.setValue(v.vals[j], i, j);
+        }
+    }
+
+    // Turns a row of the matrix to the vector
+    public getRow(i: number): Vector {
+        let res: Vector = new Vector(this.N);
+        for (let j = 0; j < this.N; j++) {
+            res.setValue(this.vals[i][j], j);
+        }
+        return res;
+    }
     copy(): Matrix {
         let ret: Matrix = new Matrix(this.M, this.N);
         for (let i = 0; i < this.M; i++) {
@@ -649,5 +684,29 @@ class Vector {
             str += (this.vals[i] + "<br/>");
         }
         return str;
+    }
+    // Takes dot product of two integer vectors
+    public static dot(v1: Vector, v2: Vector): number {
+        let res: number = 0;
+        for (let i = 0; i < v1.N; i++) {
+            res += v1.vals[i] * v2.vals[i];
+        }
+        return res;
+    }
+    // Adds two integer vectors
+    public static add(v1: Vector, v2: Vector): Vector {
+        let res: Vector = new Vector(v1.N);
+        for (let i = 0; i < v1.N; i++) {
+            res.setValue(v1.vals[i] + v2.vals[i], i);
+        }
+        return res;
+    }
+    // Multiply an integer vector by a constant
+    public static mult(v: Vector, sc: number): Vector {
+        let res: Vector = new Vector(v.N);
+        for (let i = 0; i < v.N; i++) {
+            res.setValue(v.vals[i] * sc, i);
+        }
+        return res;
     }
 }
