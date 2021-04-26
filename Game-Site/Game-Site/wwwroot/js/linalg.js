@@ -72,6 +72,7 @@ $(function () {
                         printMessage("", "\"RREF\": Simplifies to RREF form and shows work.");
                         printMessage("", "\"DET\": Prints out the determinant.");
                         printMessage("", "\"MULT\": Multiply with a vector. Arguments should be the entries of the vector separated by a single space. ");
+                        printMessage("", "\"O\": Find an orthogonal basis of the rows of the matrix. The matrix itself is not affected. ");
                         printMessage("", "\"Q\": End the program.");
                     }
                     else if (inputArr[0] === "S") {
