@@ -5,4 +5,8 @@
     <RootNamespace>Strategy_Game_Core</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.14" />
+  </ItemGroup>
+
 </Project>

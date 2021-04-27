@@ -24,8 +24,8 @@ namespace Grid_Game {
 					ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 			});
 
-			services.AddRazorPages();
-		}
+			services.AddRazorPages().AddRazorRuntimeCompilation();
+		} 
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 			app.UseForwardedHeaders();
