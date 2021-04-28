@@ -16,9 +16,24 @@ namespace Grid_Game.Pages.ObjectList
         {
             _db = db;
         }
+        [BindProperty]
         public SortObject SortObjects { get; set; }
         public void OnGet()
         {
+
+        }
+        public async Task<IActionResult> OnPost()
+        {
+            if (ModelState.IsValid)
+            {
+                SortObjects.Rating = 1500;
+                await _db.AddAsync(SortObjects);
+                await _db.SaveChangesAsync();
+                return RedirectToPage("Index");
+            } else
+            {
+                return Page();
+            }
         }
     }
 }
