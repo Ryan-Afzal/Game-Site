@@ -8,32 +8,35 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Grid_Game.Pages.ObjectList
 {
-    public class CreateModel : PageModel
+    public class EditModel : PageModel
     {
-        private readonly ApplicationDbContext _db;
 
-        public CreateModel(ApplicationDbContext db)
+        private ApplicationDbContext _db;
+
+        public EditModel(ApplicationDbContext db)
         {
             _db = db;
         }
+
         [BindProperty]
         public SortObject SortObject { get; set; }
-        public void OnGet()
+        public async Task OnGet(int id)
         {
-
+            SortObject = await _db.SortObject.FindAsync(id);
         }
+
         public async Task<IActionResult> OnPost()
         {
-            if (ModelState.IsValid)
+            if(ModelState.IsValid)
             {
-                SortObject.Rating = 1500;
-                await _db.AddAsync(SortObject);
+                var SortObjectFromDb = await _db.SortObject.FindAsync(SortObject.Id);
+                SortObjectFromDb.Name = SortObject.Name;
+
                 await _db.SaveChangesAsync();
+
                 return RedirectToPage("Index");
-            } else
-            {
-                return Page();
             }
+            return RedirectToPage();
         }
     }
 }

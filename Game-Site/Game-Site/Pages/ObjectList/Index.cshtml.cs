@@ -25,6 +25,19 @@ namespace Grid_Game.Pages.ObjectList
         {
             SortObjects = await _db.SortObject.ToListAsync();
         }
+
+        public async Task<IActionResult> OnPostDelete(int id)
+        {
+            var sortObject = await _db.SortObject.FindAsync(id);
+            if (sortObject == null)
+            {
+                return NotFound();
+            }
+            _db.SortObject.Remove(sortObject);
+            await _db.SaveChangesAsync();
+
+            return RedirectToPage("Index");
+        }
         
     }
 }
