@@ -10,12 +10,12 @@
         <h2 class="text-info">Object List</h2>
     </div>
     <div class="col-3">
-        <a class="btn btn-info form-control text-white">Create New Object</a>
+        <a asp-page="Create" class="btn btn-info form-control text-white">Create New Object</a>
     </div>
 
     <div class="col-12 border p-3 mt-3">
         <form method="post">
-            @if(Model.SortObjects.Count() > 0)
+            @if (Model.SortObjects.Count() > 0)
             {
                 <table class="table table-striped border">
                     <tr class="table-secondary">
@@ -28,24 +28,38 @@
                         <th>
                             <label asp-for="SortObjects.FirstOrDefault().Losses"></label>
                         </th>
+                        <th>
+                            <label asp-for="SortObjects.FirstOrDefault().Rating"></label>
+                        </th>
+                        <th>
+
+                        </th>
 
                     </tr>
-                    @foreach(var item in Model.SortObjects)
+                    @foreach (var item in Model.SortObjects)
                     {
                 <tr>
                     <td>
-                        @Html.DisplayFor(m =>item.Name);
+                        @Html.DisplayFor(m => item.Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(m =>item.Wins);
+                        @Html.DisplayFor(m => item.Wins)
                     </td>
                     <td>
-                        @Html.DisplayFor(m =>item.Losses);
+                        @Html.DisplayFor(m => item.Losses)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => item.Rating)
+                    </td>
+                    <td>
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                        <a class="btn btn-success btn-sm text-white">Edit</a>
                     </td>
                 </tr>
                     }
                 </table>
-            } else
+            }
+            else
             {
                 <p>No objects availabe.</p>
             }
