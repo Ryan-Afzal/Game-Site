@@ -26,6 +26,7 @@ namespace Grid_Game {
 					ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 			});
 			services.AddDbContext<ApplicationDbContext>(option=> option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+			services.AddControllersWithViews();
 			services.AddRazorPages().AddRazorRuntimeCompilation();
 		} 
 
@@ -47,6 +48,7 @@ namespace Grid_Game {
 			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints => {
+				endpoints.MapControllers();
 				endpoints.MapRazorPages();
 			});
 		}

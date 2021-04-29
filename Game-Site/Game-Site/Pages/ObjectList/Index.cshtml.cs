@@ -38,6 +38,5 @@ namespace Grid_Game.Pages.ObjectList
 
             return RedirectToPage("Index");
         }
-        
     }
 }
