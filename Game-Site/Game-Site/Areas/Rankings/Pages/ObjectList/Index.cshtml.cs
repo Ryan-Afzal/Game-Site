@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace Grid_Game.Rankings.Pages.ObjectList
+namespace Grid_Game.Areas.Rankings.Pages.ObjectList
 {
     public class IndexModel : PageModel
     {

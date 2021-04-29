@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Grid_Game.Pages {
+namespace Grid_Game.Rankings.Pages {
     public class AboutModel : PageModel {
         public void OnGet() {
 
