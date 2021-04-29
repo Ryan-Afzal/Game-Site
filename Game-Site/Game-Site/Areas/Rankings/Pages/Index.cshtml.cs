@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace Grid_Game.Rankings.Pages {
+namespace Grid_Game.Areas.Rankings.Pages {
 	public class IndexModel : PageModel {
 		private readonly ILogger<IndexModel> _logger;
 
