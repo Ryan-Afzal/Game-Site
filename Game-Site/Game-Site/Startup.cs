@@ -25,7 +25,12 @@ namespace Grid_Game {
 				options.ForwardedHeaders =
 					ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 			});
-			services.AddDbContext<ApplicationDbContext>(option=> option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+			services.AddDbContext<ApplicationDbContext>(
+				option => option.UseSqlServer(
+					Configuration.GetConnectionString("DefaultConnection")
+					)
+				);
 			services.AddControllersWithViews();
 			services.AddRazorPages().AddRazorRuntimeCompilation();
 		} 

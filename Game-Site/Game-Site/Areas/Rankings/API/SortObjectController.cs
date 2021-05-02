@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Grid_Game.Controllers
 {
-    [Route("api/SortObject")]
+    [Area("Rankings")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SortObjectController : Controller
     {
@@ -19,21 +20,29 @@ namespace Grid_Game.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<SortObjectGetOutputModel>> GetAll()
         {
-            return Json(new { data = await _db.SortObject.ToListAsync() });
+            return new SortObjectGetOutputModel() {
+                Output = await _db.SortObject.ToArrayAsync()
+            };
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(int id) {
+        public async Task<ActionResult<SortObjectDeleteOutputModel>> Delete(int id) {
             var sortObjectFromDb = await _db.SortObject.FirstOrDefaultAsync(u => u.Id == id);
             if (sortObjectFromDb == null)
             {
-                return Json(new { success = false, message = "Error while Deleting." });
+                return new SortObjectDeleteOutputModel() {
+                    Success = false,
+                    Response = "Error while Deleting."
+                };
             }
             _db.SortObject.Remove(sortObjectFromDb);
             await _db.SaveChangesAsync();
-            return Json(new { success = true, message = "Delete Successful." });
+            return new SortObjectDeleteOutputModel() {
+                Success = true,
+                Response = "Delete Successful."
+            };
         }
     }
 }
