@@ -7,17 +7,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Grid_Game.Areas.Rankings.API
+namespace Grid_Game.Areas.Rankings.Controllers
 {
-    [Area("Rankings")]
-    [Route("api/[controller]")]
+    [Route("Rankings/Controllers/Vote")]
     [ApiController]
-    public class VoteController : ControllerBase
+    public class VoteController : Controller
     {
         private readonly ApplicationDbContext _db;
         public VoteController(ApplicationDbContext db)
         {
             _db = db;
+        }
+        public IActionResult Index()
+        {
+            return View();
         }
 
         public async Task<ActionResult<VoteOutputModel>> Post(VoteInputModel model)

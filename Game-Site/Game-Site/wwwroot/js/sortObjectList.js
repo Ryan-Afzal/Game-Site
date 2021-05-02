@@ -7,7 +7,7 @@ $(document).ready(function () {
 function loadDataTable() {
     dataTable = $('#DT_load').DataTable({
         "ajax": {
-            "url": "/Rankings/api/SortObject", 
+            "url": "/api/sortObject", 
             "type": "GET", 
             "datatype": "json"
         }, 
