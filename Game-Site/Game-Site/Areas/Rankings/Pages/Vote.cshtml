@@ -1,0 +1,34 @@
+﻿@page
+@using Grid_Game.Areas.Rankings.Pages
+@model Grid_Game.Areas.Rankings.Pages.VoteModel
+@{
+}
+<center>
+    <h1 style="font-size:96px;">What's better?</h1>
+</center>
+<br>
+
+<p>
+    <center>
+        <button class="button button1" id="thing1" onclick="win12()">Loading</button>
+        <button class="button button1" id="thing2" onclick="win21()">...</button>
+    </center>
+</p>
+<p>
+    <center>
+        <a href="Vote">skip</a>
+    </center>
+</p>
+<br>
+<div class="w3-container">
+    <center>
+        <span id="winresult" class="result winner">
+        </span>
+        <br>
+        <span id="loseresult" class="result loser">
+        </span>
+    </center>
+</div>
+@section Scripts {
+    <script src="~/js/vote.js"></script>
+}
