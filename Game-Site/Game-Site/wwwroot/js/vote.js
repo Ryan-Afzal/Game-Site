@@ -10,25 +10,25 @@ function getRandomInt(max) {
 
 async function choose(x, y) {
     console.log(x + " beat " + y);
-    
-    const body = {
-        input: [x, y]
-    };
-    console.log(JSON.stringify(body));
-    fetch(`${apiURI}`, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-    })
-        .then(res => res.json())
-        .then(data => {
-            ;
-            processResponse(data.response);
-        });
-
+    if (x != "Loading") {
+        const body = {
+            input: [x, y]
+        };
+        console.log(JSON.stringify(body));
+        fetch(`${apiURI}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+            .then(res => res.json())
+            .then(data => {
+                ;
+                processResponse(data.response);
+            });
+    }
 
     // Generate new elements
     var length = states.length;
@@ -47,7 +47,7 @@ function win21() {
     choose(document.querySelector("#thing2").innerText, document.querySelector("#thing1").innerText);
 }
 function processResponse(response) {
-    var words = response.split(" ");
+    var words = response.split(";");
     document.getElementById("winresult").innerText = words[0];
     document.getElementById("loseresult").innerText = words[1];
 }
