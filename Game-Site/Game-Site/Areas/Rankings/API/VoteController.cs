@@ -28,12 +28,23 @@ namespace Grid_Game.Areas.Rankings.API
             var winner = await _db.SortObject.FirstOrDefaultAsync(u => u.Name == model.Input[0]);
             var loser = await _db.SortObject.FirstOrDefaultAsync(u => u.Name == model.Input[1]);
 
-            if (winner == null || loser == null)
+            if (winner == null)
             {
-                return new VoteOutputModel()
-                {
-                    Response = "Invalid;Request"
-                };
+                SortObject temp = new SortObject();
+                temp.Rating = 1500;
+                temp.Name = model.Input[0];
+                await _db.AddAsync(temp);
+                await _db.SaveChangesAsync();
+                winner = await _db.SortObject.FirstOrDefaultAsync(u => u.Name == model.Input[0]);
+            }
+            if (loser == null)
+            {
+                SortObject temp = new SortObject();
+                temp.Rating = 1500;
+                temp.Name = model.Input[1];
+                await _db.AddAsync(temp);
+                await _db.SaveChangesAsync();
+                loser = await _db.SortObject.FirstOrDefaultAsync(u => u.Name == model.Input[1]);
             }
             double coef = 2.0;
             double winner_rtg = winner.Rating;
@@ -53,7 +64,7 @@ namespace Grid_Game.Areas.Rankings.API
             await _db.SaveChangesAsync();
             return new VoteOutputModel()
             {
-                Response = winner.Name + ": " + Math.Floor(winner_newrtg) + " (" + Math.Floor(winner_delta) + ")" + ";" + loser.Name + ": " + Math.Floor(loser_newrtg) + " (" + Math.Floor(loser_delta) + ")"
+                Response = winner.Name + ": " + Math.Floor(winner_newrtg) + " (+" + Math.Floor(winner_delta) + ")" + ";" + loser.Name + ": " + Math.Floor(loser_newrtg) + " (" + Math.Floor(loser_delta) + ")"
             };
         }
         private double prob(double delta, double coef)

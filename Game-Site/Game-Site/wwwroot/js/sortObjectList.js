@@ -12,6 +12,7 @@ function loadDataTable() {
             "datatype": "json"
         }, 
         "columns": [
+            { "data": "rank", "width": "5%" },
             { "data": "name", "width": "15%" },
             { "data": "wins", "width": "15%" },
             { "data": "losses", "width": "15%" },
@@ -20,6 +21,7 @@ function loadDataTable() {
         "language": {
             "emptyTable": "No data found"
         }, 
-        "width": "100%"
+        "width": "100%", 
+
     })
 }

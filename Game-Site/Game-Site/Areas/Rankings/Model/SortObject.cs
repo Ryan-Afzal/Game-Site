@@ -11,6 +11,7 @@ namespace Grid_Game.Model
         [Key]
         public int Id { get; set; }
 
+        public int Rank { get; set; }
         [Required]
         public string Name { get; set; }
         public int Wins { get; set; }

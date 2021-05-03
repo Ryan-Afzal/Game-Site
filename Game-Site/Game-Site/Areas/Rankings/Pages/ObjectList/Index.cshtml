@@ -20,6 +20,9 @@
                 <table class="table table-striped border">
                     <tr class="table-secondary">
                         <th>
+                            <label asp-for="SortObjects.FirstOrDefault().Rank"></label>
+                        </th>
+                        <th>
                             <label asp-for="SortObjects.FirstOrDefault().Name"></label>
                         </th>
                         <th>
@@ -39,6 +42,9 @@
                     @foreach (var item in Model.SortObjects)
                     {
                 <tr>
+                    <td>
+                        @Html.DisplayFor(m => item.Rank)
+                    </td>
                     <td>
                         @Html.DisplayFor(m => item.Name)
                     </td>
