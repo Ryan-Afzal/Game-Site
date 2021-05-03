@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace Grid_Game.Areas.Rankings.API
 {
-    [Area("Rankings")]
     [Route("api/[controller]")]
     [ApiController]
     public class VoteController : ControllerBase
@@ -20,6 +19,7 @@ namespace Grid_Game.Areas.Rankings.API
             _db = db;
         }
 
+        [HttpPost]
         public async Task<ActionResult<VoteOutputModel>> Post(VoteInputModel model)
         {
             var winner = await _db.SortObject.FirstOrDefaultAsync(u => u.Name == model.Input[0]);
