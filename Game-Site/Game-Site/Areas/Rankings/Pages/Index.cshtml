@@ -4,12 +4,34 @@
     ViewData["Title"] = "Rankings";
 }
 
-<!-- View --> 
+<!-- View -->
 <body>
     <div class="row">
         <div class="col-12">
             <p class="display-4">Welcome to Rankings</p>
-            <p>Site in progress. </p>
+            <p style="font-size:24px;">
+                This website uses your votes and the <a href="https://en.wikipedia.org/wiki/Elo_rating_system">Elo rating system</a> to determine the best and worst things.
+            </p>
+            <p style="font-size:24px;">
+                If you like this website, please share it with anyone you know!
+            </p>
+            <center>
+                <p style="font-size:32px;">
+                    <form asp-page="Vote">
+                        <input type="submit" class="states" value="States" />
+                    </form>
+                </p>
+            </center>
+            <br />
+            
         </div>
     </div>
+    
 </body>
+<footer style="text-align:center; font-size:11px;">
+    Made by Brandon Chen, Ryan Afzal, and David Hu. Special thanks to Edward Wan and Evan Chen for testing and data collection and <a href="https://www.lichess.org/coolpant">coolpant</a> on lichess for inspiration; please check out his website at <a href="https://www.bestbytest.net">bestbytest.net</a> as well.
+</footer>
+
+@section Scripts {
+    <link rel="stylesheet" href="~/css/rankings.css" asp-append-version="true" />
+}
