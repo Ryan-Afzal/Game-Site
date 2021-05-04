@@ -10,6 +10,7 @@ namespace Grid_Game.Areas.Rankings.Model
     {
         public static void Initialize(ApplicationDbContext db)
         {
+            //db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
         }
     }
