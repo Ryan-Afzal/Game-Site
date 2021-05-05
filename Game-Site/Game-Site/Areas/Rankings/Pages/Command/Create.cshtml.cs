@@ -6,7 +6,7 @@ using Grid_Game.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Grid_Game.Areas.Rankings.Pages.ObjectList
+namespace Grid_Game.Areas.Rankings.Pages.Command
 {
     public class CreateModel : PageModel
     {
