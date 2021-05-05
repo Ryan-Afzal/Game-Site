@@ -16,6 +16,7 @@ function loadDataTable() {
             { "data": "name", "width": "15%" },
             { "data": "wins", "width": "15%" },
             { "data": "losses", "width": "15%" },
+            { "data": "total", "width": "15%", defaultContent: '' },
             {
                 "data": "rating", "width": "15%",
                 render: function (data) {
@@ -29,8 +30,9 @@ function loadDataTable() {
         "width": "100%",
         "aaSorting": [[1, 'asc']], 
         drawCallback: function () {
+            var total = 0;
             var api = this.api();
-            var arr = api.columns(4).data()[0];  //get array of column 4 (rating)
+            var arr = api.columns(5).data()[0];  //get array of column 4 (rating)
             var sorted = arr.slice().sort(function (a, b) { return b - a });
             var ranks = arr.slice().map(function (v) { return sorted.indexOf(v) + 1 });
             // interate through each row
@@ -38,10 +40,13 @@ function loadDataTable() {
                 var data = this.data();
                 console.log(data.name, data.rating, ranks[arr.indexOf(data.rating)]);
                 data.rank = ranks[arr.indexOf(data.rating)];  //set the rank column = the array index of the extn in the ranked array
+                data.total = data.wins + data.losses;
+                total += data.total;
             });
-
             api.rows().invalidate();
-
+            total = Math.floor(total / 2);
+            var totalText = document.getElementById("total");
+            totalText.innerText = "Total Games: " + total;
         }
     });
     
